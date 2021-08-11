@@ -1,0 +1,26 @@
+﻿<Window x:Class="UniversalTM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UniversalTM"
+        mc:Ignorable="d"
+        Title="MainWindow" ResizeMode="CanMinimize" Height="480" Width="869">
+    <Grid Background="#FF99B4D1">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="393*"/>
+            <RowDefinition Height="71*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="475*"/>
+            <ColumnDefinition Width="394*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="94,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="59"/>
+        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="94,41,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="59"/>
+        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="228,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="58"/>
+        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="227,41,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="59"/>
+        <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" Margin="5,5,5,5" Background="#FFB7FFFF">
+            <TextBlock Text="TextBlock" TextWrapping="Wrap" Margin="9,9,9,9" Background="White"/>
+        </Border>
+    </Grid>
+</Window>
