@@ -5,22 +5,73 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UniversalTM"
         mc:Ignorable="d"
-        Title="MainWindow" ResizeMode="CanMinimize" Height="480" Width="869">
-    <Grid Background="#FF99B4D1">
+        Title="Universal Turing Machine" ResizeMode="CanMinimize" Height="556" Width="1076" BorderBrush="#FF1D6BC9">
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFEEDEBB" Offset="0.314"/>
+            <GradientStop Color="#FFF96E67" Offset="1"/>
+            <GradientStop Color="#FFEAA615"/>
+            <GradientStop Color="#FFF3D82E" Offset="0.673"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    <Grid Margin="5,5,5,5">
+        <Grid.Effect>
+            <DropShadowEffect/>
+        </Grid.Effect>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#FFC3BE52"/>
+                <GradientStop Color="#FFFFA85F" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
         <Grid.RowDefinitions>
-            <RowDefinition Height="393*"/>
-            <RowDefinition Height="71*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="409*"/>
+            <RowDefinition Height="79*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="475*"/>
             <ColumnDefinition Width="394*"/>
         </Grid.ColumnDefinitions>
-        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="94,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="59"/>
-        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="94,41,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="59"/>
-        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="228,10,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="58"/>
-        <Button Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="227,41,0,0" Grid.Row="1" VerticalAlignment="Top" Height="26" Width="59"/>
-        <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" Margin="5,5,5,5" Background="#FFB7FFFF">
-            <TextBlock Text="TextBlock" TextWrapping="Wrap" Margin="9,9,9,9" Background="White"/>
+        <Button Content="Exit" HorizontalAlignment="Left" Margin="10,43,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="73" Click="Exit"/>
+        <Button x:Name="loadTM" Content="Load TM" Grid.Column="1" HorizontalAlignment="Left" Margin="73,5,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="LoadTM"/>
+        <Button x:Name="exec" Content="Run" Grid.Column="1" HorizontalAlignment="Left" Margin="228,5,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80"/>
+        <Button x:Name="clearTM" Content="Clear TM" Grid.Column="1" HorizontalAlignment="Left" Margin="73,43,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80"/>
+        <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" Margin="10,10,23,5" Background="#FFFBCF37" Grid.RowSpan="2">
+            <Border.Effect>
+                <DropShadowEffect/>
+            </Border.Effect>
+            <TextBlock x:Name="TM_code" TextWrapping="Wrap" Margin="5,29,5,5" Background="White" FontFamily="Consolas" FontStyle="Italic"/>
         </Border>
+        <Label Content="Simulated Turing Machine" Grid.Column="1" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top" Width="157" FontWeight="Bold" Height="40" Grid.RowSpan="2"/>
+        <Border BorderThickness="1" BorderBrush="Black" Margin="5,16,5,287" Grid.Row="1">
+            <Border.Effect>
+                <DropShadowEffect/>
+            </Border.Effect>
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFB9F9C5"/>
+                    <GradientStop Color="#FFF1D209" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <DataGrid x:Name="tape_data" Margin="5,35,5,9"/>
+        </Border>
+        <Label Content="Tape Data" FontStyle="Normal" Margin="10,0,493,332" FontWeight="Bold" Grid.Row="1" Height="34" VerticalAlignment="Bottom"/>
+        <Border BorderThickness="1" BorderBrush="Black" RenderTransformOrigin="5,5" Margin="5,146,5,10" Background="#FFF8FF6D" Grid.Row="1">
+            <Border.Effect>
+                <DropShadowEffect/>
+            </Border.Effect>
+            <TextBlock x:Name="log" TextWrapping="Wrap" Margin="5,27,5,5" Background="White"/>
+        </Border>
+        <Label Content="Execution Log" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="96" FontWeight="Bold" Grid.Row="1" Height="26"/>
+        <Button x:Name="clearTape" Content="Clear Tape" Grid.Column="1" HorizontalAlignment="Left" Margin="228,43,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80"/>
+        <Label Content="Input:" HorizontalAlignment="Left" Margin="169,21,0,0" Grid.Row="2" VerticalAlignment="Top" Width="48" Height="26"/>
+        <TextBox x:Name="input_box" HorizontalAlignment="Left" Margin="222,21,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="143" Height="26"/>
+        <Menu Grid.ColumnSpan="2" Margin="5,10,550,5" Background="#FFF9D27D">
+            <MenuItem Header="Settings" FontStyle="Normal" FontWeight="Normal"/>
+            <Separator Width="2" Foreground="#FFF9B728" Height="25"/>
+            <MenuItem Header="Export"/>
+        </Menu>
     </Grid>
 </Window>
