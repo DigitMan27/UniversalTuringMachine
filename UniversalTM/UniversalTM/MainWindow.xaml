@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UniversalTM"
         xmlns:Data="clr-namespace:System.Data;assembly=System.Data.Common" x:Class="UniversalTM.MainWindow"
         mc:Ignorable="d"
-        Title="Universal Turing Machine" ResizeMode="CanMinimize" Height="556" Width="1076" BorderBrush="#FF1D6BC9" Background="#FF6B81E4">
+        Title="Universal Turing Machine" ResizeMode="CanMinimize" Height="556" Width="1076">
     <Grid Margin="0,0,0,0" Background="#FFFDAA19">
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
@@ -20,8 +20,8 @@
         </Grid.ColumnDefinitions>
         <Button Content="Exit" HorizontalAlignment="Left" Margin="10,43,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="73" Click="Exit"/>
         <Button x:Name="loadTM" Content="Load TM" Grid.Column="1" HorizontalAlignment="Left" Margin="73,5,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="LoadTM"/>
-        <Button x:Name="exec" Content="Run" Grid.Column="1" HorizontalAlignment="Left" Margin="183,21,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" IsEnabled="False"/>
-        <Button x:Name="clearTM" Content="Clear TM" Grid.Column="1" HorizontalAlignment="Left" Margin="73,40,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" IsEnabled="False"/>
+        <Button x:Name="exec" Content="Run" Grid.Column="1" HorizontalAlignment="Left" Margin="183,21,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="Execute" IsEnabled="False" ClickMode="Press"/>
+        <Button x:Name="clearTM" Content="Clear TM" Grid.Column="1" HorizontalAlignment="Left" Margin="73,40,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" IsEnabled="False" Click="ClearTM"/>
         <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" Margin="10,10,23,5" Background="#FFFB8108" Grid.RowSpan="2">
             <Border.Effect>
                 <DropShadowEffect/>
@@ -33,25 +33,26 @@
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <DataGrid x:Name="tape_data" Margin="5,35,5,9" AutoGenerateColumns="False" FontFamily="Consolas" IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" ItemsSource="{Binding}">
-                
-            </DataGrid>
+            <DataGrid x:Name="tape_data" Margin="5,35,5,12" FontFamily="Consolas" IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" ItemsSource="{Binding table.DefaultView}"/>
         </Border>
         <Label Content="Tape Data" FontStyle="Normal" Margin="10,0,493,344" FontWeight="Bold" Grid.Row="1" Height="34" VerticalAlignment="Bottom"/>
         <Border BorderThickness="1" BorderBrush="Black" RenderTransformOrigin="5,5" Margin="5,146,5,10" Background="#FFFBF008" Grid.Row="1">
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <TextBlock x:Name="log" TextWrapping="Wrap" Margin="5,27,5,5" Background="White" FontStyle="Italic"/>
+            <ScrollViewer BorderThickness="1" Margin="5,30,5,5" ClipToBounds="True" VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="log" TextWrapping="Wrap" Margin="0,0,0,5" Background="White" FontStyle="Italic" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+            </ScrollViewer>
         </Border>
         <Label Content="Execution Log" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="96" FontWeight="Bold" Grid.Row="1" Height="26"/>
-        <Button x:Name="insertToTape" Content="Insert To Tape" HorizontalAlignment="Left" Margin="389,21,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="92" IsEnabled="False" Click="Write2Tape"/>
+        <Button x:Name="insertToTape" Content="Insert To Tape" HorizontalAlignment="Left" Margin="389,21,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="92" Click="Write2Tape"/>
         <Label Content="Input:" HorizontalAlignment="Left" Margin="169,21,0,0" Grid.Row="2" VerticalAlignment="Top" Width="48" Height="26"/>
-        <TextBox x:Name="input_box" HorizontalAlignment="Left" Margin="222,21,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="143" Height="26" IsEnabled="False"/>
+        <TextBox x:Name="input_box" HorizontalAlignment="Left" Margin="222,21,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="143" Height="26"/>
         <Menu Margin="5,0,67,10" Background="#FFF8F6F3">
             <MenuItem Header="Settings" FontStyle="Normal" FontWeight="Normal"/>
             <Separator Width="2" Foreground="#FFF9B728" Height="25"/>
             <MenuItem Header="Export"/>
         </Menu>
+        <Button x:Name="clearTape" Content="Clear Tape" HorizontalAlignment="Left" Margin="491,22,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="87" Click="ClearTape" IsEnabled="False"/>
     </Grid>
 </Window>
