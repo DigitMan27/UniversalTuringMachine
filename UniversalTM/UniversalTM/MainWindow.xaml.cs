@@ -27,7 +27,10 @@ namespace UniversalTM
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Thread loadTM_t;
+        private Thread execTM_t;
+        public delegate void delUpdateTextBlock(string txt);
+        public delegate void delUpdateTape(DataTable tp);
+        private DataTable tapeData;
 
         private Tuple<List<State>, Flags, int> states = null;
         
@@ -148,9 +151,22 @@ namespace UniversalTM
             }
         }
 
-        private void Execute(object sender, RoutedEventArgs e)
+        private void UpdateTXT(string txt)
         {
+            this.log.Inlines.Add(new Run(txt));
+            
+        }
+
+        private void UpdateTable(DataTable tp)
+        {
+            this.tape_data.ItemsSource = tp.DefaultView;
+        }
+        private void Execute_in_Thread(DataTable tapeData)
+        {
+            delUpdateTextBlock update = new delUpdateTextBlock(UpdateTXT);
+            delUpdateTape tup = new delUpdateTape(UpdateTable);
             int header = 0;
+            int count = 0;
             State state = states.Item1[0];
             //this.log.Inlines.Add(new Run("[+] IN RUN .\n"));
 
@@ -165,24 +181,37 @@ namespace UniversalTM
                     {
                         if (state == states.Item1[(states.Item1.Count) - 1])
                         {
-                            this.log.Inlines.Add(new Run("[+] Input was successfuly accepted by the Turing machine .\n"));
+                            this.Dispatcher.Invoke(update, "[+] Input was successfuly accepted by the Turing machine .\n");
+                            //this .log.Dispatcher.BeginInvoke(update, "[+] Input was successfuly accepted by the Turing machine .\n");
+                            //this.log.Inlines.Add(new Run("[+] Input was successfuly accepted by the Turing machine .\n"));
                             break;
                         }
                         else
                         {
-                            this.log.Inlines.Add(new Run("[+] Input was not successfuly accepted by the Turing machine .\n"));
+                            this.Dispatcher.Invoke(update, "[+] Input was not successfuly accepted by the Turing machine .\n");
+                            //this.log.Dispatcher.BeginInvoke(update, "[+] Input was not successfuly accepted by the Turing machine .\n");
+                            // this.log.Inlines.Add(new Run("[+] Input was not successfuly accepted by the Turing machine .\n"));
                             break;
                         }
                     }
-                    DataTable tapeData = ((DataView)tape_data.ItemsSource).ToTable();
+                    //DataTable tapeData = ((DataView)this.tape_data.ItemsSource).ToTable(); 
                     string i = tapeData.Rows[0][header].ToString();
+                    if (count < 500)
+                    {
+                        this.Dispatcher.Invoke(update, "[+] Input " + i + " .\n");
+                        count += 1;
+                    }
+                    //this.log.Inlines.Add(new Run("[+] Input " + i + " .\n"));
+                    //this.log.Dispatcher.Invoke(update, "[+] Input " + i + " .\n");
                     
-                    this.log.Inlines.Add(new Run("[+] Input " + i + " .\n"));
+                    
+
 
                     if (state.writeToTape.ContainsKey(i))
                     {
                         tapeData.Rows[0][header] = state.writeToTape[i];
-                        this.tape_data.ItemsSource = tapeData.DefaultView;
+                        //this.tape_data.ItemsSource = tapeData.DefaultView;
+                        this.Dispatcher.BeginInvoke(tup, tapeData);
                     }
 
                     int move = (int)state.moveToTape[i];
@@ -191,13 +220,47 @@ namespace UniversalTM
                         header += move;
                     }
                     state = state.nextState[i];
-                 }
-                catch {
-                    this.log.Inlines.Add(new Run("[+] This input string is not supported by the TM.\n"));
-                    break; 
+                }
+                catch
+                {
+                    //this.log.Inlines.Add(new Run("[+] This input string is not supported by the TM.\n"));
+
+                    //this.log.Inlines.Add(new Run("[+] This input string is not supported by the TM.\n"));
+                    this.Dispatcher.Invoke(update, "[+] This input string is not supported by the TM.\n");
+                   // this .log.Dispatcher.BeginInvoke(update, "[+] This input string is not supported by the TM.\n");
+                    break;
                 }
 
             }
+        }
+        private void Execute(object sender, RoutedEventArgs e)
+        {
+            this.exec.IsEnabled = false;
+            this.clearTM.IsEnabled = false;
+            this.clearTape.IsEnabled = false;
+            this.insertToTape.IsEnabled = false;
+            tapeData= ((DataView)this.tape_data.ItemsSource).ToTable();
+
+            execTM_t = new Thread(() => Execute_in_Thread(tapeData));
+            execTM_t.IsBackground = true;
+            execTM_t.Start();
+            if (!execTM_t.IsAlive)
+            {
+                this.exec.IsEnabled = true;
+                this.clearTM.IsEnabled = true;
+                this.clearTape.IsEnabled = true;
+                this.insertToTape.IsEnabled = true;
+            }
+            
+
+            /*if (execTM_t.IsAlive)
+            {
+                //this.execTM_t.Join();
+                this.exec.IsEnabled = true;
+                this.clearTM.IsEnabled = true;
+                this.clearTape.IsEnabled = true;
+                this.insertToTape.IsEnabled = true;
+            }*/
         }
 
         private void ClearTape(object sender, RoutedEventArgs e)

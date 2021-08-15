@@ -7,7 +7,7 @@
         xmlns:Data="clr-namespace:System.Data;assembly=System.Data.Common" x:Class="UniversalTM.MainWindow"
         mc:Ignorable="d"
         Title="Universal Turing Machine" ResizeMode="CanMinimize" Height="556" Width="1076">
-    <Grid Margin="0,0,0,0" Background="#FFFDAA19">
+    <Grid x:Name="mainGrid" Margin="0,0,0,0" Background="#FFFDAA19">
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="409*"/>
