@@ -54,5 +54,6 @@
             <MenuItem Header="Export"/>
         </Menu>
         <Button x:Name="clearTape" Content="Clear Tape" HorizontalAlignment="Left" Margin="491,22,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="87" Click="ClearTape" IsEnabled="False"/>
+        <Button x:Name="stop" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="289,22,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="StopRun" IsEnabled="False" ClickMode="Press"/>
     </Grid>
 </Window>
