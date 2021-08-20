@@ -1,24 +1,15 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace UniversalTM
 {
@@ -28,10 +19,14 @@ namespace UniversalTM
     public partial class MainWindow : Window
     {
         private Thread execTM_t;
+        Settings window_setting;
+
         public delegate void delUpdateTextBlock(string txt);
         public delegate void delUpdateTape(DataTable tp);
         public delegate void delEnableBtns();
+
         private DataTable tapeData;
+        public int InputShowValue=500; // default value
         public bool termination = false;
 
         private Tuple<List<State>, Flags, int> states = null;
@@ -66,7 +61,7 @@ namespace UniversalTM
             }
             if (!filepath.Equals(""))
             {
-                var reader = new StreamReader(filepath);
+                StreamReader reader = new StreamReader(filepath);
                 int line_n = 0;
 
                 while (!reader.EndOfStream)
@@ -86,11 +81,9 @@ namespace UniversalTM
                     {
                         this.exec.IsEnabled = true;
                     }
-                    /*this.insertToTape.IsEnabled = true;
-                    this.input_box.IsEnabled = true;*/
                 }else if(states.Item2 == Flags.NO_STATES)
                 {
-                    this.TM_code.Inlines.ElementAt(0).Foreground = Brushes.Red;
+                    this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(States Error) .\n"));
                 }
                 else if(states.Item2 == Flags.NO_DESCRIPTION)
@@ -173,7 +166,7 @@ namespace UniversalTM
             this.insertToTape.IsEnabled = true;
         }
 
-        private void Execute_in_Thread(DataTable tapeData)
+        private void Execute_in_Thread(DataTable tapeData,double time)
         {
             delUpdateTextBlock DupdateTextBlock = new delUpdateTextBlock(UpdateTXT);
             delUpdateTape Dtape_update = new delUpdateTape(UpdateTable);
@@ -181,9 +174,9 @@ namespace UniversalTM
             int header = 0;
             int count = 0;
             State state = states.Item1[0];
-            
 
-            
+            Stopwatch timer = new Stopwatch();
+
             while (termination == false)
             {
                 try
@@ -192,7 +185,7 @@ namespace UniversalTM
 
                     if (header == this.tape_data.Columns.Count)
                     {
-                        if (state == states.Item1[(states.Item1.Count) - 1])
+                        if (state.finish /*== states.Item1[(states.Item1.Count) - 1]*/)
                         {
                             this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was successfuly accepted by the Turing machine .\n");
                             this.Dispatcher.BeginInvoke(DenableBtns);
@@ -209,11 +202,11 @@ namespace UniversalTM
                     }
                     
                     string i = tapeData.Rows[0][header].ToString();
-                    if (count < 500)
+                    if (count < InputShowValue)
                     {
                         this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input " + i + " .\n");
                         count += 1;
-                        if (count == 500)
+                        if (count == InputShowValue)
                         {
                             this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input can't be written to <Execution Log> anymore (default No. Lines) "+count+ " .\n");
                         }
@@ -232,24 +225,39 @@ namespace UniversalTM
                         header += move;
                     }
                     state = state.nextState[i];
+                    timer.Start();
+                    
+                    while (timer.Elapsed < TimeSpan.FromSeconds(time)) ;
+                    timer.Stop();
+                    timer.Reset();
+                   
                 }
                 catch
                 {
                    
                     this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] This input string is not supported by the TM.\n");
                     this.Dispatcher.BeginInvoke(DenableBtns);
-                    
+                    timer.Stop();
                     break;
                 }
+               
 
             }
+            timer.Stop();
             var ct = new CancellationTokenSource();
             CancellationToken tok = ct.Token;
             Task.Factory.StartNew(() =>
             {
                 if (tok.IsCancellationRequested)
                 {
-                    tok.ThrowIfCancellationRequested();
+                    try
+                    {
+                        tok.ThrowIfCancellationRequested();
+                    }
+                    catch
+                    {
+                        //nothing
+                    }
                 }
             }, tok);
             try
@@ -269,9 +277,10 @@ namespace UniversalTM
             this.insertToTape.IsEnabled = false;
             this.stop.IsEnabled = true;
             this.termination = false;
-            tapeData= ((DataView)this.tape_data.ItemsSource).ToTable();
+            double time = double.Parse(exec_speed.Text);
+            tapeData = ((DataView)this.tape_data.ItemsSource).ToTable();
 
-            execTM_t = new Thread(() => Execute_in_Thread(tapeData));
+            execTM_t = new Thread(() => Execute_in_Thread(tapeData,time));
             execTM_t.IsBackground = true;
             execTM_t.Start();
             
@@ -298,7 +307,15 @@ namespace UniversalTM
             this.clearTM.IsEnabled = true;
             this.clearTape.IsEnabled = true;
             this.insertToTape.IsEnabled = true;
+            this.log.Inlines.Add(new Run("[+] Turing machine simulation stopped .\n"));
 
+        }
+
+        private void ShowSettings(object sender, RoutedEventArgs e)
+        {
+             this.window_setting = new Settings();
+            this.window_setting.Show();
+           // this.InputShowValue = this.window_setting.inputshowvalue; TODO
         }
     }
 }

@@ -9,9 +9,9 @@ namespace UniversalTM
 {
     public enum Flags
     {
-        NO_STATES = 1,
-        NO_DESCRIPTION = 2,
-        SUCCESS=0
+        NO_STATES = 1, // Occurs if 1st line is not of the form States:q1,q2,q3 ... or if the second line of stating the accept state is missing .
+        NO_DESCRIPTION = 2, // Occurs if there are not or are wrong typed the transition rules of the turing machine .
+        SUCCESS=0 // success .
     }
     class TMclass
     {
@@ -30,7 +30,7 @@ namespace UniversalTM
             {
                 string s = lines[0];
                 string pattern = "(:)";
-                string[] ss = Regex.Split(s, pattern);
+                string[] ss = Regex.Split(s.Trim(), "[States]"+pattern);
                 string[] ss1 = Regex.Split(ss[2], ",");
                 foreach (string s1 in ss1)
                 {
@@ -38,22 +38,33 @@ namespace UniversalTM
                     state.Name = s1;
                     states.Add(state);
                 }
+                string accept_state_line = lines[1];
+                string[] accept_state_split = Regex.Split(accept_state_line.Trim(), "[Accept]"+pattern);
+                if (accept_state_split.Length != 3)
+                {
+                    line_count += 1;
+                    throw new Exception();
+                }else if(accept_state_split.Length == 3)
+                {
+                    states.Find(o => o.Name.Equals(accept_state_split[2])).finish = true;
+                }
+                
 
             }
             catch
             {
-                return Tuple.Create(new List<State>() { }, Flags.NO_STATES, 1);
+                return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count+1);
             }
-            int ind = 1;
+            
             if (states.Count != 0)
             {
                 foreach (string line in lines)
                 {
                     line_count += 1;
                     
-                    if (ind == 1 || line == null)
+                    if (line_count<2 || line == null)
                     {
-                        ind = 0;
+                       
                         continue;
                     }
                     else if (!string.IsNullOrEmpty(line.Trim()))

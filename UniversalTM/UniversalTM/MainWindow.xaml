@@ -7,7 +7,7 @@
         xmlns:Data="clr-namespace:System.Data;assembly=System.Data.Common" x:Class="UniversalTM.MainWindow"
         mc:Ignorable="d"
         Title="Universal Turing Machine" ResizeMode="CanMinimize" Height="556" Width="1076">
-    <Grid x:Name="mainGrid" Margin="0,0,0,0" Background="#FFFDAA19">
+    <Grid x:Name="mainGrid" Margin="0,0,0,0" Background="{DynamicResource mainGrid}">
         <Grid.RowDefinitions>
             <RowDefinition Height="40*"/>
             <RowDefinition Height="409*"/>
@@ -22,38 +22,41 @@
         <Button x:Name="loadTM" Content="Load TM" Grid.Column="1" HorizontalAlignment="Left" Margin="73,5,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="LoadTM"/>
         <Button x:Name="exec" Content="Run" Grid.Column="1" HorizontalAlignment="Left" Margin="183,21,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="Execute" IsEnabled="False" ClickMode="Press"/>
         <Button x:Name="clearTM" Content="Clear TM" Grid.Column="1" HorizontalAlignment="Left" Margin="73,40,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" IsEnabled="False" Click="ClearTM"/>
-        <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" Margin="10,10,23,5" Background="#FFFB8108" Grid.RowSpan="2">
+        <Border BorderThickness="1" BorderBrush="Black" Grid.Column="1" Margin="10,10,23,5" Background="{DynamicResource SimTMColor}" Grid.RowSpan="2">
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <TextBlock x:Name="TM_code" TextWrapping="Wrap" Margin="5,29,5,5" Background="White" FontFamily="Consolas" FontStyle="Italic"/>
+            <TextBlock x:Name="TM_code" TextWrapping="Wrap" Margin="5,29,5,5" Background="White" FontFamily="{DynamicResource simTMRes}" FontStyle="Italic"/>
         </Border>
         <Label Content="Simulated Turing Machine" Grid.Column="1" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top" Width="157" FontWeight="Bold" Height="40" Grid.RowSpan="2"/>
-        <Border BorderThickness="1" BorderBrush="Black" Margin="5,16,5,287" Grid.Row="1" Background="#FFC9F01D">
+        <Border BorderThickness="1" BorderBrush="Black" Margin="5,16,5,287" Grid.Row="1" Background="{DynamicResource TapeColor}">
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <DataGrid x:Name="tape_data" Margin="5,35,5,12" FontFamily="Consolas" IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" ItemsSource="{Binding table.DefaultView}"/>
+            <DataGrid x:Name="tape_data" Margin="5,35,5,19" FontFamily="{DynamicResource TapeFontRes}" IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" ItemsSource="{Binding table.DefaultView}"/>
         </Border>
         <Label Content="Tape Data" FontStyle="Normal" Margin="10,0,493,344" FontWeight="Bold" Grid.Row="1" Height="34" VerticalAlignment="Bottom"/>
-        <Border BorderThickness="1" BorderBrush="Black" RenderTransformOrigin="5,5" Margin="5,146,5,10" Background="#FFFBF008" Grid.Row="1">
+        <Border BorderThickness="1" BorderBrush="Black" RenderTransformOrigin="5,5" Margin="5,146,5,10" Background="{DynamicResource ExecLogColor}" Grid.Row="1">
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
             <ScrollViewer BorderThickness="1" Margin="5,30,5,5" ClipToBounds="True" VerticalScrollBarVisibility="Auto">
-                <TextBlock x:Name="log" TextWrapping="Wrap" Margin="0,0,0,5" Background="White" FontStyle="Italic" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                <TextBlock FontFamily="{DynamicResource ExecFontRes}" x:Name="log" TextWrapping="Wrap" Margin="0,0,0,5" Background="White" FontStyle="Italic" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
             </ScrollViewer>
         </Border>
         <Label Content="Execution Log" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="96" FontWeight="Bold" Grid.Row="1" Height="26"/>
-        <Button x:Name="insertToTape" Content="Insert To Tape" HorizontalAlignment="Left" Margin="389,21,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="92" Click="Write2Tape"/>
-        <Label Content="Input:" HorizontalAlignment="Left" Margin="169,21,0,0" Grid.Row="2" VerticalAlignment="Top" Width="48" Height="26"/>
-        <TextBox x:Name="input_box" HorizontalAlignment="Left" Margin="222,21,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="143" Height="26"/>
+        <Button x:Name="insertToTape" Content="Insert To Tape" HorizontalAlignment="Left" Margin="392,9,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="92" Click="Write2Tape"/>
+        <Label Content="Input:" HorizontalAlignment="Left" Margin="172,9,0,0" Grid.Row="2" VerticalAlignment="Top" Width="48" Height="26"/>
+        <TextBox x:Name="input_box" HorizontalAlignment="Left" Margin="226,9,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="142" Height="26"/>
         <Menu Margin="5,0,67,10" Background="#FFF8F6F3">
-            <MenuItem Header="Settings" FontStyle="Normal" FontWeight="Normal"/>
+            <MenuItem Header="Settings" FontStyle="Normal" FontWeight="Normal" Click="ShowSettings"/>
             <Separator Width="2" Foreground="#FFF9B728" Height="25"/>
             <MenuItem Header="Export"/>
         </Menu>
-        <Button x:Name="clearTape" Content="Clear Tape" HorizontalAlignment="Left" Margin="491,22,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="87" Click="ClearTape" IsEnabled="False"/>
+        <Button x:Name="clearTape" Content="Clear Tape" HorizontalAlignment="Left" Margin="494,10,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="84" Click="ClearTape" IsEnabled="False"/>
         <Button x:Name="stop" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="289,22,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="StopRun" IsEnabled="False" ClickMode="Press"/>
+        <Label Content="Execution Time Speed:" HorizontalAlignment="Left" Margin="172,43,0,0" Grid.Row="2" VerticalAlignment="Top" Width="136"/>
+        <TextBox x:Name="exec_speed" HorizontalAlignment="Left" Margin="308,46,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="23"/>
+        <Label Content="(in seconds)" HorizontalAlignment="Left" Margin="373,43,0,0" Grid.Row="2" VerticalAlignment="Top" Width="79"/>
     </Grid>
 </Window>

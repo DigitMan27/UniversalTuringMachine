@@ -1,0 +1,76 @@
+﻿<Window x:Class="UniversalTM.Settings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UniversalTM"
+        mc:Ignorable="d"
+        Title="Settings" ResizeMode="CanMinimize" Height="478" Width="600">
+    <Grid Margin="0,0,0,0" Background="{DynamicResource SettingGrid}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="23*"/>
+            <RowDefinition Height="54*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="103*"/>
+            <ColumnDefinition Width="97*"/>
+        </Grid.ColumnDefinitions>
+        <Border BorderThickness="1" BorderBrush="Black" Margin="13,13,14,126" Background="{DynamicResource SettingB2}" Grid.Row="1">
+            <Label Content="Execution Log" Margin="0,9,0,66" FontSize="18" HorizontalAlignment="Center" Width="262" RenderTransformOrigin="0.512,0.488"/>
+        </Border>
+        <Label Content="No. of input characters shown:" Margin="30,75,103,202" Grid.Row="1"/>
+        <TextBox Text=""  x:Name="Num_of_lines" HorizontalAlignment="Left" Margin="206,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64" Height="18" Grid.Row="1" InputScope="Number" MaxLines="1" />
+
+        <Label Content="Font:" HorizontalAlignment="Left" Margin="30,132,0,0" VerticalAlignment="Top" Height="30" Width="102" Grid.Row="1"/>
+
+        <ComboBox x:Name="font_changer" HorizontalAlignment="Center" Margin="0,136,0,0" VerticalAlignment="Top" Width="138" Height="22" Grid.Row="1">
+            <ComboBoxItem Content="Default" FontFamily="Segoe UI" IsSelected="True"/>
+            <ComboBoxItem Content="Arial" FontFamily="Arial"/>
+            <ComboBoxItem Content="Berlin Sans FB" FontFamily="Berlin Sans FB"/>
+            <ComboBoxItem Content="Consolas" FontFamily="Consolas"/>
+            <ComboBoxItem Content="Global Serif" FontFamily="Global Serif"/>
+            <ComboBoxItem Content="Lato Light" FontFamily="Lato Light"/>
+            <ComboBoxItem Content="Microsoft Sans Serif" FontFamily="Microsoft Sans Serif"/>
+            <ComboBoxItem Content="Times New Roman" FontFamily="Times New Roman"/>
+        </ComboBox>
+
+        <Border BorderThickness="1" BorderBrush="Black" Margin="13,14,14,25" Background="{DynamicResource SettingB1}">
+            <Label Content="General" Margin="0,9,140,-1" FontSize="18" HorizontalAlignment="Right" Width="121"/>
+        </Border>
+        <Label Content="Theme:" HorizontalAlignment="Left" Margin="32,62,0,0" VerticalAlignment="Top" Width="76" Height="26"/>
+        <ComboBox x:Name="theme_box" HorizontalAlignment="Center" Margin="0,66,0,0" VerticalAlignment="Top" Width="120" Height="22">
+            <ComboBoxItem Content="Main Theme" IsSelected="True"/>
+            <ComboBoxItem Content="Theme 1"/>
+            <ComboBoxItem Content="Theme 2"/>
+        </ComboBox>
+        <Border BorderThickness="1" BorderBrush="Black" Margin="0,106,7,202" Background="{DynamicResource SettingB3}" Grid.Column="1" Grid.RowSpan="2">
+            <Label Content="Turing Machine and Tape" Margin="9,9,49,42" FontSize="18"/>
+        </Border>
+        <Label Content="TM Font :" HorizontalAlignment="Left" Margin="12,29,0,0" VerticalAlignment="Top" Width="81" Grid.Column="1" Height="26" Grid.Row="1"/>
+        <ComboBox x:Name="TM_font_changer" HorizontalAlignment="Center" Margin="0,31,0,0" VerticalAlignment="Top" Width="138" Grid.Column="1" Height="22" Grid.Row="1">
+            <ComboBoxItem Content="Default" FontFamily="Consolas" IsSelected="True"/>
+            <ComboBoxItem Content="Segoe UI" FontFamily="Segoe UI"/>
+            <ComboBoxItem Content="Arial" FontFamily="Arial"/>
+            <ComboBoxItem Content="Berlin Sans FB" FontFamily="Berlin Sans FB"/>
+            <ComboBoxItem Content="Global Serif" FontFamily="Global Serif"/>
+            <ComboBoxItem Content="Lato Light" FontFamily="Lato Light"/>
+            <ComboBoxItem Content="Microsoft Sans Serif" FontFamily="Microsoft Sans Serif"/>
+            <ComboBoxItem Content="Times New Roman" FontFamily="Times New Roman"/>
+        </ComboBox>
+        <Button x:Name="settings_exit" Content="Exit" HorizontalAlignment="Left" Margin="13,263,0,0" VerticalAlignment="Top" Height="29" Width="57" Grid.Row="1" Click="ExitSettings"/>
+        <Button x:Name="Apply" Content="Apply" HorizontalAlignment="Left" Margin="83,263,0,0" VerticalAlignment="Top" Height="29" Width="69" Grid.Row="1" Click="ApplySettings"/>
+        <Button x:Name="_default" Content="Reset to Default" HorizontalAlignment="Left" Margin="166,263,0,0" VerticalAlignment="Top" Height="29" Width="102" Grid.Row="1" Click="Reset"/>
+        <Label Content="Tape Font :" HorizontalAlignment="Left" Margin="12,67,0,0" VerticalAlignment="Top" Width="81" Grid.Column="1" Height="26" Grid.Row="1"/>
+        <ComboBox x:Name="Tape_font_changer" HorizontalAlignment="Center" Margin="0,71,0,0" VerticalAlignment="Top" Width="138" Grid.Column="1" Height="22" Grid.Row="1">
+            <ComboBoxItem Content="Default" FontFamily="Consolas" IsSelected="True"/>
+            <ComboBoxItem Content="Segoe UI" FontFamily="Segoe UI"/>
+            <ComboBoxItem Content="Arial" FontFamily="Arial"/>
+            <ComboBoxItem Content="Berlin Sans FB" FontFamily="Berlin Sans FB"/>
+            <ComboBoxItem Content="Global Serif" FontFamily="Global Serif"/>
+            <ComboBoxItem Content="Lato Light" FontFamily="Lato Light"/>
+            <ComboBoxItem Content="Microsoft Sans Serif" FontFamily="Microsoft Sans Serif"/>
+            <ComboBoxItem Content="Times New Roman" FontFamily="Times New Roman"/>
+        </ComboBox>
+        <Label Content="Warning: Big numbers in this field should be avoided (default: 500) ." HorizontalAlignment="Left" Margin="32,99,0,0" Grid.Row="1" VerticalAlignment="Top" Width="254" Height="28" FontSize="8"/>
+    </Grid>
+</Window>

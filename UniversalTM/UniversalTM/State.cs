@@ -15,6 +15,7 @@ namespace UniversalTM
             NOP = 0
         }
         private string name;
+        public bool finish { get; set; } = false; // true if state is accept state
         public Dictionary<string, string> writeToTape = new Dictionary<string, string>();
         public Dictionary<string, Move> moveToTape = new Dictionary<string, Move>();
         public Dictionary<string, State> nextState = new Dictionary<string, State>();
