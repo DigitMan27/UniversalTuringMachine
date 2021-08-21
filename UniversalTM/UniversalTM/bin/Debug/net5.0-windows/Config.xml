@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+  <MainTheme Name="Theme 1" />
+  <InputLimit Value="6" />
+  <Log Font="Segoe UI" />
+  <Tape Font="Consolas" />
+  <TM Font="Consolas" />
+</Settings>
