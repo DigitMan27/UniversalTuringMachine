@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Xml;
 
 namespace UniversalTM
 {
@@ -26,7 +27,7 @@ namespace UniversalTM
         public delegate void delEnableBtns();
 
         private DataTable tapeData;
-        public int InputShowValue=500; // default value
+        public int InputShowValue = 500; // default value in case that the user dont use the settings .
         public bool termination = false;
 
         private Tuple<List<State>, Flags, int> states = null;
@@ -35,6 +36,32 @@ namespace UniversalTM
         public MainWindow()
         {
             InitializeComponent();
+            if (File.Exists("Config.xml"))
+            {
+                LoadSettings();
+            }
+        }
+
+        private void LoadSettings()
+        {
+            List<string> settings = new List<string>();
+            XmlDocument doc = new XmlDocument();
+            doc.Load("Config.xml");
+            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+            {
+                
+                string text = node.Attributes["Value"].InnerText;
+                settings.Add(text);
+            }
+            ResourceDictionary dict = new ResourceDictionary();
+            dict.Source = new Uri("Themes\\" + settings[0] + ".xaml", UriKind.Relative);
+            InputShowValue = int.Parse(settings[1]);
+            App.Current.Resources["simTMRes"] = new FontFamily(settings[4]);
+            App.Current.Resources["ExecFontRes"] = new FontFamily(settings[2]);
+            App.Current.Resources["TapeFontRes"] = new FontFamily(settings[3]); 
+            App.Current.Resources.MergedDictionaries.Add(dict);
+            
+
         }
 
         private void Exit(object sender, RoutedEventArgs e)
@@ -67,7 +94,7 @@ namespace UniversalTM
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
-                    this.TM_code.Inlines.Add(new Run(line_n + ".  " + line + "\n"));
+                    this.TM_code.Inlines.Add(new Run(line_n + ". " + line + "\n"));
                     line_n += 1;
                 }
                 turingMachine = new TMclass(filepath);
@@ -147,6 +174,33 @@ namespace UniversalTM
             }
         }
 
+        private void Execute(object sender, RoutedEventArgs e)
+        {
+            this.exec.IsEnabled = false;
+            this.clearTM.IsEnabled = false;
+            this.clearTape.IsEnabled = false;
+            this.insertToTape.IsEnabled = false;
+            this.stop.IsEnabled = true;
+            this.termination = false;
+            this.exec_speed.IsEnabled = false;
+            double time;
+            if (string.IsNullOrEmpty(exec_speed.Text) || double.Parse(exec_speed.Text) < 0) // default value if empty or negative value .
+            {
+                time = 0;
+            }
+            else
+            {
+                time = double.Parse(exec_speed.Text);
+            }
+            
+            tapeData = ((DataView)this.tape_data.ItemsSource).ToTable();
+
+            execTM_t = new Thread(() => Execute_in_Thread(tapeData, time));
+            execTM_t.IsBackground = true;
+            execTM_t.Start();
+
+        }
+
         private void UpdateTXT(string txt)
         {
             this.log.Inlines.Add(new Run(txt));
@@ -164,6 +218,7 @@ namespace UniversalTM
             this.clearTM.IsEnabled = true;
             this.clearTape.IsEnabled = true;
             this.insertToTape.IsEnabled = true;
+            this.exec_speed.IsEnabled = true;
         }
 
         private void Execute_in_Thread(DataTable tapeData,double time)
@@ -208,7 +263,7 @@ namespace UniversalTM
                         count += 1;
                         if (count == InputShowValue)
                         {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input can't be written to <Execution Log> anymore (default No. Lines) "+count+ " .\n");
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input display limit reached (Limit(#Lines)) "+count+ " .\n");
                         }
                     }
                     
@@ -269,22 +324,7 @@ namespace UniversalTM
             }
             
         }
-        private void Execute(object sender, RoutedEventArgs e)
-        {
-            this.exec.IsEnabled = false;
-            this.clearTM.IsEnabled = false;
-            this.clearTape.IsEnabled = false;
-            this.insertToTape.IsEnabled = false;
-            this.stop.IsEnabled = true;
-            this.termination = false;
-            double time = double.Parse(exec_speed.Text);
-            tapeData = ((DataView)this.tape_data.ItemsSource).ToTable();
-
-            execTM_t = new Thread(() => Execute_in_Thread(tapeData,time));
-            execTM_t.IsBackground = true;
-            execTM_t.Start();
-            
-        }
+        
 
         private void ClearTape(object sender, RoutedEventArgs e)
         {
@@ -307,6 +347,7 @@ namespace UniversalTM
             this.clearTM.IsEnabled = true;
             this.clearTape.IsEnabled = true;
             this.insertToTape.IsEnabled = true;
+            this.exec_speed.IsEnabled = true;
             this.log.Inlines.Add(new Run("[+] Turing machine simulation stopped .\n"));
 
         }

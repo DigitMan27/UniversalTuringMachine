@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -12,10 +13,32 @@ namespace UniversalTM
     /// </summary>
     public partial class Settings : Window
     {
-        public int inputshowvalue;
+        
         public Settings()
         {
             InitializeComponent();
+            if (File.Exists("Config.xml"))
+            {
+                LoadSettings();
+            }
+        }
+
+        private void LoadSettings()
+        {
+            List<string> settings = new List<string>();
+            XmlDocument doc = new XmlDocument();
+            doc.Load("Config.xml");
+            foreach (XmlNode node in doc.DocumentElement.ChildNodes)
+            {
+
+                string text = node.Attributes["Value"].InnerText;
+                settings.Add(text);
+            }
+            ResourceDictionary dict = new ResourceDictionary();
+            dict.Source = new Uri("Themes\\" + settings[0] + ".xaml", UriKind.Relative);
+            App.Current.Resources.MergedDictionaries.Add(dict);
+
+
         }
 
         private void ExitSettings(object sender, RoutedEventArgs e)
@@ -25,7 +48,7 @@ namespace UniversalTM
 
         private void ApplySettings(object sender, RoutedEventArgs e)
         {
-
+            bool restartAppFlag = false;
             ComboBoxItem theme = (ComboBoxItem)this.theme_box.SelectedItem;
             string str_theme = theme.Content.ToString();
             if (!string.IsNullOrEmpty(str_theme))
@@ -50,21 +73,27 @@ namespace UniversalTM
             {
                 App.Current.Resources["TapeFontRes"] = new FontFamily(tapeFont.FontFamily.ToString());
             }
-            string txt_value = this.Num_of_lines.Text;
-            if (int.Parse(txt_value) > 0)
+            string inputDisLim = this.Num_of_lines.Text;
+            if (!string.IsNullOrEmpty(inputDisLim) && int.Parse(inputDisLim)!=500 && int.Parse(inputDisLim)>0) // default value if negative,empty or same as the default value
             {
-                inputshowvalue = int.Parse(txt_value);
+                    restartAppFlag = true;
             }
+            else
+            {
+                inputDisLim = "500";
+            }
+            
+            
 
             UpdateLayout();
 
 
             List<Tuple<string, string, string>> settings = new List<Tuple<string, string, string>>{ 
-                new Tuple<string, string, string>("MainTheme", "Name", str_theme),
-                new Tuple<string, string, string>("InputLimit", "Value", inputshowvalue.ToString()),
-                new Tuple<string, string, string>("Log","Font", execFont.FontFamily.ToString()),
-                new Tuple<string, string, string>("Tape","Font",tapeFont.FontFamily.ToString()),
-                new Tuple<string, string, string>("TM","Font",simTMFont.FontFamily.ToString())
+                new Tuple<string, string, string>("MainTheme", "Value", str_theme),
+                new Tuple<string, string, string>("InputLimit", "Value", inputDisLim),
+                new Tuple<string, string, string>("LogFont","Value", execFont.FontFamily.ToString()),
+                new Tuple<string, string, string>("TapeFont","Value",tapeFont.FontFamily.ToString()),
+                new Tuple<string, string, string>("TMFont","Value",simTMFont.FontFamily.ToString())
             };
 
             XmlDocument config = new XmlDocument();
@@ -84,11 +113,13 @@ namespace UniversalTM
             
             config.Save("Config.xml");
 
+            if (restartAppFlag)
+            {
+                MessageBox.Show("Restart the app for the changes to take effect.", "Apply Settings");
+            }
+
         }
-        public int getValue()
-        {
-            return this.inputshowvalue;
-        }
+
         private void Reset(object sender, RoutedEventArgs e)
         {
 

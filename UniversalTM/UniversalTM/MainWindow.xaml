@@ -26,7 +26,7 @@
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <TextBlock x:Name="TM_code" TextWrapping="Wrap" Margin="5,29,5,5" Background="White" FontFamily="{DynamicResource simTMRes}" FontStyle="Italic"/>
+            <TextBlock x:Name="TM_code" TextAlignment="Left" TextWrapping="Wrap" Margin="5,29,5,5" Background="White" FontFamily="{DynamicResource simTMRes}" FontStyle="Italic"/>
         </Border>
         <Label Content="Simulated Turing Machine" Grid.Column="1" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top" Width="157" FontWeight="Bold" Height="40" Grid.RowSpan="2"/>
         <Border BorderThickness="1" BorderBrush="Black" Margin="5,16,5,287" Grid.Row="1" Background="{DynamicResource TapeColor}">
@@ -56,7 +56,7 @@
         <Button x:Name="clearTape" Content="Clear Tape" HorizontalAlignment="Left" Margin="494,10,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="84" Click="ClearTape" IsEnabled="False"/>
         <Button x:Name="stop" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="289,22,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="StopRun" IsEnabled="False" ClickMode="Press"/>
         <Label Content="Execution Time Speed:" HorizontalAlignment="Left" Margin="172,43,0,0" Grid.Row="2" VerticalAlignment="Top" Width="136"/>
-        <TextBox x:Name="exec_speed" HorizontalAlignment="Left" Margin="308,46,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="23"/>
+        <TextBox x:Name="exec_speed" HorizontalAlignment="Left" Margin="308,46,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="23" Text="0"/>
         <Label Content="(in seconds)" HorizontalAlignment="Left" Margin="373,43,0,0" Grid.Row="2" VerticalAlignment="Top" Width="79"/>
     </Grid>
 </Window>

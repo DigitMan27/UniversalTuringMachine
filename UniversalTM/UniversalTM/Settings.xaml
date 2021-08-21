@@ -19,7 +19,7 @@
             <Label Content="Execution Log" Margin="0,9,0,66" FontSize="18" HorizontalAlignment="Center" Width="262" RenderTransformOrigin="0.512,0.488"/>
         </Border>
         <Label Content="No. of input characters shown:" Margin="30,75,103,202" Grid.Row="1"/>
-        <TextBox Text=""  x:Name="Num_of_lines" HorizontalAlignment="Left" Margin="206,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64" Height="18" Grid.Row="1" InputScope="Number" MaxLines="1" />
+        <TextBox Text="500"  x:Name="Num_of_lines" HorizontalAlignment="Left" Margin="206,78,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="64" Height="18" Grid.Row="1" InputScope="Number" MaxLines="1" />
 
         <Label Content="Font:" HorizontalAlignment="Left" Margin="30,132,0,0" VerticalAlignment="Top" Height="30" Width="102" Grid.Row="1"/>
 
