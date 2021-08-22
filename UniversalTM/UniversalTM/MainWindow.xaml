@@ -26,14 +26,18 @@
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <TextBlock x:Name="TM_code" TextAlignment="Left" TextWrapping="Wrap" Margin="5,29,5,5" Background="White" FontFamily="{DynamicResource simTMRes}" FontStyle="Italic"/>
+            <ScrollViewer BorderThickness="1" Margin="5,30,5,5" ClipToBounds="True" VerticalScrollBarVisibility="Auto">
+                <TextBlock x:Name="TM_code" TextAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,0" Background="White" FontFamily="{DynamicResource simTMRes}" FontStyle="Italic" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+            </ScrollViewer>
         </Border>
         <Label Content="Simulated Turing Machine" Grid.Column="1" HorizontalAlignment="Left" Margin="19,10,0,0" VerticalAlignment="Top" Width="157" FontWeight="Bold" Height="40" Grid.RowSpan="2"/>
         <Border BorderThickness="1" BorderBrush="Black" Margin="5,16,5,287" Grid.Row="1" Background="{DynamicResource TapeColor}">
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <DataGrid x:Name="tape_data" Margin="5,35,5,19" FontFamily="{DynamicResource TapeFontRes}" IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" ItemsSource="{Binding table.DefaultView}"/>
+            <ScrollViewer BorderThickness="0.5" Margin="5,0,5,5" ClipToBounds="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                <DataGrid x:Name="tape_data" Margin="0,25,0,9" FontFamily="{DynamicResource TapeFontRes}" IsReadOnly="True" CanUserSortColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" ItemsSource="{Binding table.DefaultView}" HeadersVisibility="Column" ClipToBounds="True"/>
+            </ScrollViewer>
         </Border>
         <Label Content="Tape Data" FontStyle="Normal" Margin="10,0,493,344" FontWeight="Bold" Grid.Row="1" Height="34" VerticalAlignment="Bottom"/>
         <Border BorderThickness="1" BorderBrush="Black" RenderTransformOrigin="5,5" Margin="5,146,5,10" Background="{DynamicResource ExecLogColor}" Grid.Row="1">
@@ -41,7 +45,7 @@
                 <DropShadowEffect/>
             </Border.Effect>
             <ScrollViewer BorderThickness="1" Margin="5,30,5,5" ClipToBounds="True" VerticalScrollBarVisibility="Auto">
-                <TextBlock FontFamily="{DynamicResource ExecFontRes}" x:Name="log" TextWrapping="Wrap" Margin="0,0,0,5" Background="White" FontStyle="Italic" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
+                <TextBlock FontFamily="{DynamicResource ExecFontRes}" x:Name="log" TextWrapping="Wrap" Margin="0,0,0,0" Background="White" FontStyle="Italic" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
             </ScrollViewer>
         </Border>
         <Label Content="Execution Log" HorizontalAlignment="Left" Margin="10,146,0,0" VerticalAlignment="Top" Width="96" FontWeight="Bold" Grid.Row="1" Height="26"/>
@@ -50,8 +54,10 @@
         <TextBox x:Name="input_box" HorizontalAlignment="Left" Margin="226,9,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="142" Height="26"/>
         <Menu Margin="5,0,67,10" Background="#FFF8F6F3">
             <MenuItem Header="Settings" FontStyle="Normal" FontWeight="Normal" Click="ShowSettings"/>
-            <Separator Width="2" Foreground="#FFF9B728" Height="25"/>
+            <Separator Width="2" Height="25"/>
             <MenuItem Header="Export"/>
+            <Separator Width="2" Height="25"/>
+            <MenuItem Header="Help"/>
         </Menu>
         <Button x:Name="clearTape" Content="Clear Tape" HorizontalAlignment="Left" Margin="494,10,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="84" Click="ClearTape" IsEnabled="False"/>
         <Button x:Name="stop" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="289,22,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="StopRun" IsEnabled="False" ClickMode="Press"/>

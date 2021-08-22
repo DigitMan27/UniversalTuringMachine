@@ -22,17 +22,22 @@ namespace UniversalTM
         private Thread execTM_t;
         Settings window_setting;
 
-        public delegate void delUpdateTextBlock(string txt);
-        public delegate void delUpdateTape(DataTable tp);
-        public delegate void delEnableBtns();
+        private delegate void delUpdateTextBlock(string txt);
+        private delegate void delUpdateTape(DataTable tp);
+        private delegate void delEnableBtns();
+        private delegate void delUpdateHeader(int pos,int move);
 
-        private DataTable tapeData;
+        public DataTable tapeData;
+
+        //settings variables
         public int InputShowValue = 500; // default value in case that the user dont use the settings .
-        public bool termination = false;
+        public string header_color = "#FFFF00"; // default value (Yellow) 
+        private bool termination = false;
 
         private Tuple<List<State>, Flags, int> states = null;
         
         private TMclass turingMachine;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -56,6 +61,7 @@ namespace UniversalTM
             ResourceDictionary dict = new ResourceDictionary();
             dict.Source = new Uri("Themes\\" + settings[0] + ".xaml", UriKind.Relative);
             InputShowValue = int.Parse(settings[1]);
+            header_color = settings[5];
             App.Current.Resources["simTMRes"] = new FontFamily(settings[4]);
             App.Current.Resources["ExecFontRes"] = new FontFamily(settings[2]);
             App.Current.Resources["TapeFontRes"] = new FontFamily(settings[3]); 
@@ -184,15 +190,9 @@ namespace UniversalTM
             this.termination = false;
             this.exec_speed.IsEnabled = false;
             double time;
-            if (string.IsNullOrEmpty(exec_speed.Text) || double.Parse(exec_speed.Text) < 0) // default value if empty or negative value .
-            {
-                time = 0;
-            }
-            else
-            {
-                time = double.Parse(exec_speed.Text);
-            }
             
+            time = (string.IsNullOrEmpty(exec_speed.Text) || double.Parse(exec_speed.Text) < 0) ? time = 0 : time = double.Parse(exec_speed.Text); // default value if empty or negative value .
+
             tapeData = ((DataView)this.tape_data.ItemsSource).ToTable();
 
             execTM_t = new Thread(() => Execute_in_Thread(tapeData, time));
@@ -219,6 +219,29 @@ namespace UniversalTM
             this.clearTape.IsEnabled = true;
             this.insertToTape.IsEnabled = true;
             this.exec_speed.IsEnabled = true;
+            this.stop.IsEnabled = false;
+        }
+
+        private void HeaderUpdate(int pos,int move)
+        {
+            System.Collections.ObjectModel.ObservableCollection<System.Windows.Controls.DataGridColumn> cols = this.tape_data.Columns;
+
+            Style style = new Style(typeof(System.Windows.Controls.Primitives.DataGridColumnHeader));
+            style.Setters.Add(new Setter
+            {
+                Property = BackgroundProperty,
+                Value = new BrushConverter().ConvertFromString(header_color) as SolidColorBrush
+            }) ;
+            style.Setters.Add(new Setter
+            {
+                Property = BorderBrushProperty,
+                Value = Brushes.Black
+            });
+
+            cols[pos].HeaderStyle = style;
+            if (move > 0) { cols[pos - 1].HeaderStyle = null; }
+            else if(move < 0 && pos < tapeData.Columns.Count-1) { cols[pos + 1].HeaderStyle = null; }
+
         }
 
         private void Execute_in_Thread(DataTable tapeData,double time)
@@ -226,74 +249,98 @@ namespace UniversalTM
             delUpdateTextBlock DupdateTextBlock = new delUpdateTextBlock(UpdateTXT);
             delUpdateTape Dtape_update = new delUpdateTape(UpdateTable);
             delEnableBtns DenableBtns = new delEnableBtns(EnableBtns);
-            int header = 0;
+            delUpdateHeader DheaderUpdate = new delUpdateHeader(HeaderUpdate);
+
+            int header = -1;
             int count = 0;
             State state = states.Item1[0];
+
+
+            //this.Dispatcher.BeginInvoke(DheaderUpdate, header, 0);
 
             Stopwatch timer = new Stopwatch();
 
             while (termination == false)
             {
-                try
+                if (header == -1)
                 {
-
-
-                    if (header == this.tape_data.Columns.Count)
-                    {
-                        if (state.finish /*== states.Item1[(states.Item1.Count) - 1]*/)
-                        {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was successfuly accepted by the Turing machine .\n");
-                            this.Dispatcher.BeginInvoke(DenableBtns);
-                            
-                            break;
-                        }
-                        else
-                        {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was not successfuly accepted by the Turing machine .\n");
-                            this.Dispatcher.BeginInvoke(DenableBtns);
-                            
-                            break;
-                        }
-                    }
-                    
-                    string i = tapeData.Rows[0][header].ToString();
-                    if (count < InputShowValue)
-                    {
-                        this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input " + i + " .\n");
-                        count += 1;
-                        if (count == InputShowValue)
-                        {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input display limit reached (Limit(#Lines)) "+count+ " .\n");
-                        }
-                    }
-                    
-
-                    if (state.writeToTape.ContainsKey(i))
-                    {
-                        tapeData.Rows[0][header] = state.writeToTape[i];
-                        this.Dispatcher.BeginInvoke(Dtape_update, tapeData);
-                    }
-
-                    int move = (int)state.moveToTape[i];
-                    if ((header + move) >= 0)
-                    {
-                        header += move;
-                    }
-                    state = state.nextState[i];
+                    this.Dispatcher.BeginInvoke(DheaderUpdate, header + 1, 0);
+                    header = 0;
                     timer.Start();
-                    
+
                     while (timer.Elapsed < TimeSpan.FromSeconds(time)) ;
                     timer.Stop();
                     timer.Reset();
-                   
                 }
-                catch
+                else
                 {
-                   
-                    this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] This input string is not supported by the TM.\n");
-                    this.Dispatcher.BeginInvoke(DenableBtns);
-                    timer.Stop();
-                    break;
+
+
+
+                    try
+                    {
+
+
+                        if (header == this.tape_data.Columns.Count)
+                        {
+                            if (state.finish /*== states.Item1[(states.Item1.Count) - 1]*/)
+                            {
+                                this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was successfuly accepted by the Turing machine .\n");
+                                this.Dispatcher.BeginInvoke(DenableBtns);
+
+                                break;
+                            }
+                            else
+                            {
+                                this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was not successfuly accepted by the Turing machine .\n");
+                                this.Dispatcher.BeginInvoke(DenableBtns);
+
+                                break;
+                            }
+                        }
+
+                        string i = tapeData.Rows[0][header].ToString();
+                        if (count < InputShowValue)
+                        {
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input " + i + " .\n");
+                            count += 1;
+                            if (count == InputShowValue)
+                            {
+                                this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input display limit reached (Limit(#Lines)) " + count + " .\n");
+                            }
+                        }
+
+
+                        if (state.writeToTape.ContainsKey(i))
+                        {
+                            tapeData.Rows[0][header] = state.writeToTape[i];
+                            this.Dispatcher.BeginInvoke(Dtape_update, tapeData);
+                        }
+
+                        int move = (int)state.moveToTape[i];
+                        if ((header + move) >= 0)
+                        {
+                            header += move;
+                            if (header <= tapeData.Columns.Count - 1)
+                                this.Dispatcher.BeginInvoke(DheaderUpdate, header, move);
+                        }
+
+                        state = state.nextState[i];
+                        timer.Start();
+
+                        while (timer.Elapsed < TimeSpan.FromSeconds(time)) ;
+                        timer.Stop();
+                        timer.Reset();
+
+                    }
+                    catch
+                    {
+
+                        this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] This input string is not supported by the TM.\n");
+                        this.Dispatcher.BeginInvoke(DenableBtns);
+                        timer.Stop();
+                        break;
+                    }
                 }
                
 
@@ -354,9 +401,8 @@ namespace UniversalTM
 
         private void ShowSettings(object sender, RoutedEventArgs e)
         {
-             this.window_setting = new Settings();
+            this.window_setting = new Settings(this);
             this.window_setting.Show();
-           // this.InputShowValue = this.window_setting.inputshowvalue; TODO
         }
     }
 }
