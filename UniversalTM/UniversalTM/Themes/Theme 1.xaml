@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="mainGrid" Color="#00B4D8"/>
+    <SolidColorBrush x:Key="TapeColor" Color="#48CAE4"/>
+    <SolidColorBrush x:Key="ExecLogColor" Color="#0077B6"/>
+    <SolidColorBrush x:Key="SimTMColor" Color="#CAF0F8"/>
+    <SolidColorBrush x:Key="SettingB1" Color="#5E60CE"/>
+    <SolidColorBrush x:Key="SettingB2" Color="#6930C3"/>
+    <SolidColorBrush x:Key="SettingB3" Color="#72EFDD"/>
+    <SolidColorBrush x:Key="SettingGrid" Color="#5390D9"/>
+
+</ResourceDictionary>

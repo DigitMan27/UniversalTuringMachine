@@ -1,0 +1,28 @@
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Debug\net5.0-windows\UniversalTM.exe
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Debug\net5.0-windows\UniversalTM.deps.json
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Debug\net5.0-windows\UniversalTM.runtimeconfig.json
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Debug\net5.0-windows\UniversalTM.runtimeconfig.dev.json
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Debug\net5.0-windows\UniversalTM.dll
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Debug\net5.0-windows\ref\UniversalTM.dll
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Debug\net5.0-windows\UniversalTM.pdb
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\MainWindow.g.cs
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\App.g.cs
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM_MarkupCompile.cache
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM_MarkupCompile.lref
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\MainWindow.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.g.resources
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.AssemblyInfoInputs.cache
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.AssemblyInfo.cs
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.csproj.CoreCompileInputs.cache
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.dll
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\ref\UniversalTM.dll
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.pdb
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.genruntimeconfig.cache
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\Settings.g.cs
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\Settings.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\App.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\Themes\Theme 1.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\Themes\Theme 2.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\Themes\Main Theme.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Debug\net5.0-windows\UniversalTM.csproj.AssemblyReference.cache
