@@ -1,0 +1,5 @@
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Release\net5.0-windows\publish\UniversalTM.exe
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Release\net5.0-windows\publish\UniversalTM.dll
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Release\net5.0-windows\publish\UniversalTM.deps.json
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Release\net5.0-windows\publish\UniversalTM.runtimeconfig.json
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\bin\Release\net5.0-windows\publish\UniversalTM.pdb
