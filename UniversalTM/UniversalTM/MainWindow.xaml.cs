@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -27,12 +28,19 @@ namespace UniversalTM
         private delegate void delEnableBtns();
         private delegate void delUpdateHeader(int pos,int move);
 
-        public DataTable tapeData;
+        public DataTable tapeData = new DataTable();
 
-        //settings variables
+
+        //settings default variable values
         public int InputShowValue = 500; // default value in case that the user dont use the settings .
         public string header_color = "#FFFF00"; // default value (Yellow) 
+        public string blank_symbol = "ε";
+        public int tapeLen = 512;
+        //End 
+        
         private bool termination = false;
+        private char[] input; // user input
+        private int output_len = 0; // increment (not used yet)
 
         private Tuple<List<State>, Flags, int> states = null;
         
@@ -45,6 +53,7 @@ namespace UniversalTM
             {
                 LoadSettings();
             }
+            InitTape();
         }
 
         private void LoadSettings()
@@ -62,12 +71,30 @@ namespace UniversalTM
             dict.Source = new Uri("Themes\\" + settings[0] + ".xaml", UriKind.Relative);
             InputShowValue = int.Parse(settings[1]);
             header_color = settings[5];
+            tapeLen = int.Parse(settings[6]);
+            blank_symbol = settings[7];
             App.Current.Resources["simTMRes"] = new FontFamily(settings[4]);
             App.Current.Resources["ExecFontRes"] = new FontFamily(settings[2]);
             App.Current.Resources["TapeFontRes"] = new FontFamily(settings[3]); 
             App.Current.Resources.MergedDictionaries.Add(dict);
             
 
+        }
+
+        public void InitTape()
+        {
+
+            DataRow row = tapeData.NewRow();
+            for (int i = 0; i < tapeLen; i++)
+            {
+
+                tapeData.Columns.Add(new DataColumn(i.ToString(), typeof(string)));
+                row[i] = blank_symbol;
+
+            }
+            
+            tapeData.Rows.Add(row);
+            this.tape_data.ItemsSource = tapeData.DefaultView;
         }
 
         private void Exit(object sender, RoutedEventArgs e)
@@ -124,13 +151,28 @@ namespace UniversalTM
                     this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Machine Description Error line: " + states.Item3 + "  ) .\n"));
                 }
+                else if (states.Item2 == Flags.NO_ACCEPT)
+                {
+                    this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
+                    this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Missing Accept State) .\n"));
+                }
+                else if (states.Item2 == Flags.NO_REJECT)
+                {
+                    this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
+                    this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Missing Reject State) .\n"));
+                }
+                else if (states.Item2 == Flags.SAME_STATE)
+                {
+                    this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
+                    this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Same Accept and Reject State) .\n"));
+                }
 
             }
         }
 
         private void Write2Tape(object sender, RoutedEventArgs e)
         {
-            char[] input = this.input_box.Text.ToCharArray();
+            input = this.input_box.Text.ToCharArray();
             if(input.Length==0)
             {
                 
@@ -139,20 +181,20 @@ namespace UniversalTM
             }
             else
             {
-                DataTable table = new DataTable();
-                
-                DataRow row = table.NewRow();
-                
+                //DataTable table = new DataTable();
+
+
+                DataRow row = tapeData.Rows[0];
                 for (int i = 0; i < input.Length; i++)
                 {
                     
-                    table.Columns.Add(new DataColumn(i.ToString(),typeof(string)));
+                    //tapeData.Columns.Add(new DataColumn(i.ToString(),typeof(string)));
                     row[i] = input[i].ToString();
                     
                 }
-                
-                table.Rows.Add(row);
-                this.tape_data.ItemsSource = table.DefaultView;
+
+                //tapeData.Rows.Add(row);
+                this.tape_data.ItemsSource = tapeData.DefaultView;
                 this.log.Inlines.Add(new Run("[+] Input has written in the tape .\n"));
                 if (states!=null)
                 {
@@ -274,29 +316,21 @@ namespace UniversalTM
                 }
                 else
                 {
-
-
-
                     try
                     {
-
-
-                        if (header == this.tape_data.Columns.Count)
+                        if (state.accept /*== states.Item1[(states.Item1.Count) - 1]*/)
                         {
-                            if (state.finish /*== states.Item1[(states.Item1.Count) - 1]*/)
-                            {
-                                this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was successfuly accepted by the Turing machine .\n");
-                                this.Dispatcher.BeginInvoke(DenableBtns);
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was successfuly accepted by the Turing machine .\n");
+                            this.Dispatcher.BeginInvoke(DenableBtns);
 
-                                break;
-                            }
-                            else
-                            {
-                                this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was not successfuly accepted by the Turing machine .\n");
-                                this.Dispatcher.BeginInvoke(DenableBtns);
+                            break;
+                        }
+                        else if(state.reject)
+                        {
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was not successfuly accepted by the Turing machine .\n");
+                            this.Dispatcher.BeginInvoke(DenableBtns);
 
-                                break;
-                            }
+                            break;
                         }
 
                         string i = tapeData.Rows[0][header].ToString();
@@ -321,6 +355,8 @@ namespace UniversalTM
                         if ((header + move) >= 0)
                         {
                             header += move;
+                            if (header > output_len)
+                                output_len = header+1;
                             if (header <= tapeData.Columns.Count - 1)
                                 this.Dispatcher.BeginInvoke(DheaderUpdate, header, move);
                         }
@@ -336,7 +372,7 @@ namespace UniversalTM
                     catch
                     {
 
-                        this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] This input string is not supported by the TM.\n");
+                        this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] There is not declared transition for this input at this state(Failure).\n");
                         this.Dispatcher.BeginInvoke(DenableBtns);
                         timer.Stop();
                         break;
@@ -373,15 +409,25 @@ namespace UniversalTM
         }
         
 
-        private void ClearTape(object sender, RoutedEventArgs e)
+        private void ClearTape(object sender, RoutedEventArgs e) // NOTE: do not know what happens when we write past the input len
         {
             if (this.tape_data.Columns.Count > 0)
             {
 
                 this.exec.IsEnabled = false;
                 this.clearTape.IsEnabled = false;
-                this.tape_data.Columns.Clear();
-                this.tape_data.ItemsSource = null;
+                this.tape_data.ColumnHeaderStyle = null;
+                //this.tape_data.Columns.Clear();
+                DataRow row = tapeData.Rows[0];
+                for (int i = 0; i < output_len; i++)
+                {
+
+                    row[i] = blank_symbol;
+                }
+
+                //tapeData.Rows.Add(row);
+                this.tape_data.ItemsSource = tapeData.DefaultView;
+                //InitTape();
                 this.log.Inlines.Add(new Run("[+] Input removed from the tape .\n"));
             }
         }

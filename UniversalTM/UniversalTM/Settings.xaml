@@ -44,10 +44,10 @@
             <ComboBoxItem Content="Theme 1"/>
             <ComboBoxItem Content="Theme 2"/>
         </ComboBox>
-        <Border BorderThickness="1" BorderBrush="Black" Margin="0,106,7,166" Background="{DynamicResource SettingB3}" Grid.Column="1" Grid.RowSpan="2">
+        <Border BorderThickness="1" BorderBrush="Black" Margin="0,106,7,0" Background="{DynamicResource SettingB3}" Grid.Column="1" Grid.RowSpan="2" Height="255" VerticalAlignment="Top">
             <Label Content="Turing Machine and Tape" Margin="9,9,49,42" FontSize="18"/>
         </Border>
-        <Label Content="TM Font :" HorizontalAlignment="Left" Margin="12,29,0,0" VerticalAlignment="Top" Width="81" Grid.Column="1" Height="26" Grid.Row="1"/>
+        <Label Content="TM Font :" HorizontalAlignment="Left" Margin="11,29,0,0" VerticalAlignment="Top" Width="81" Grid.Column="1" Height="26" Grid.Row="1"/>
         <ComboBox x:Name="TM_font_changer" HorizontalAlignment="Center" Margin="0,31,0,0" VerticalAlignment="Top" Width="138" Grid.Column="1" Height="22" Grid.Row="1">
             <ComboBoxItem Content="Default" FontFamily="Consolas" IsSelected="True"/>
             <ComboBoxItem Content="Segoe UI" FontFamily="Segoe UI"/>
@@ -60,7 +60,7 @@
         </ComboBox>
         <Button x:Name="settings_exit" Content="Exit" HorizontalAlignment="Left" Margin="13,263,0,0" VerticalAlignment="Top" Height="29" Width="57" Grid.Row="1" Click="ExitSettings"/>
         <Button x:Name="Apply" Content="Apply" HorizontalAlignment="Left" Margin="83,263,0,0" VerticalAlignment="Top" Height="29" Width="69" Grid.Row="1" Click="ApplySettings"/>
-        <Label Content="Tape Font :" HorizontalAlignment="Left" Margin="12,67,0,0" VerticalAlignment="Top" Width="81" Grid.Column="1" Height="26" Grid.Row="1"/>
+        <Label Content="Tape Font :" HorizontalAlignment="Left" Margin="11,67,0,0" VerticalAlignment="Top" Width="81" Grid.Column="1" Height="26" Grid.Row="1"/>
         <ComboBox x:Name="Tape_font_changer" HorizontalAlignment="Center" Margin="0,71,0,0" VerticalAlignment="Top" Width="138" Grid.Column="1" Height="22" Grid.Row="1">
             <ComboBoxItem Content="Default" FontFamily="Consolas" IsSelected="True"/>
             <ComboBoxItem Content="Segoe UI" FontFamily="Segoe UI"/>
@@ -72,7 +72,7 @@
             <ComboBoxItem Content="Verdana" FontFamily="Verdana"/>
         </ComboBox>
         <Label Content="Warning: Big numbers in this field should be avoided (default: 500) ." HorizontalAlignment="Left" Margin="32,99,0,0" Grid.Row="1" VerticalAlignment="Top" Width="254" Height="28" FontSize="8"/>
-        <Label Content="Header Color:" Grid.Column="1" HorizontalAlignment="Left" Margin="12,104,0,0" Grid.Row="1" VerticalAlignment="Top" Width="91"/>
+        <Label Content="Header Color:" Grid.Column="1" HorizontalAlignment="Left" Margin="11,104,0,0" Grid.Row="1" VerticalAlignment="Top" Width="92"/>
         <ComboBox x:Name="header_color" Grid.Column="1" HorizontalAlignment="Left" Margin="103,106,0,0" Grid.Row="1" VerticalAlignment="Top" Width="112">
             <ComboBoxItem Background="#FFFFF300" Content="Yellow" IsSelected="True"/>
             <ComboBoxItem Background="#FFFF1C1C" Content="Red"/>
@@ -96,6 +96,10 @@
                 </TransformGroup>
             </Separator.RenderTransform>
         </Separator>
+        <Label Content="Tape Length:" Grid.Column="1" HorizontalAlignment="Left" Margin="11,144,0,0" Grid.Row="1" VerticalAlignment="Top" Width="78"/>
+        <TextBox x:Name="tape_len" Grid.Column="1" HorizontalAlignment="Left" Margin="98,148,0,0" Grid.Row="1" Text="512" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" MaxLines="1" MinLines="1" InputScope="Number"/>
+        <Label Content="Blank Symbol:" Grid.Column="1" HorizontalAlignment="Left" Margin="11,175,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90"/>
+        <TextBox x:Name="blank_symb" Grid.Column="1" HorizontalAlignment="Left" Margin="98,179,0,0" Grid.Row="1" Text="ε" TextWrapping="Wrap" VerticalAlignment="Top" Width="47" MaxLines="1" InputScope="OneChar"/>
 
     </Grid>
 </Window>
