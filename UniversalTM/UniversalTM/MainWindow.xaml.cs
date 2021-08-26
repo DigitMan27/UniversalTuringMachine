@@ -35,7 +35,7 @@ namespace UniversalTM
         public int InputShowValue = 500; // default value in case that the user dont use the settings .
         public string header_color = "#FFFF00"; // default value (Yellow) 
         public string blank_symbol = "ε";
-        public int tapeLen = 512;
+        public int tapeLen = 256;
         //End 
         
         private bool termination = false;
@@ -104,6 +104,8 @@ namespace UniversalTM
 
         private void LoadTM(object sender, RoutedEventArgs e)
         {
+            if(this.TM_code.Inlines.Count>0)
+                this.TM_code.Inlines.Clear();
             string filepath = string.Empty;
 
             OpenFileDialog openFileDialog = new OpenFileDialog();

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Settings>
   <MainTheme Value="Theme 1" Index="1" />
-  <InputLimit Value="400" Index="-1" />
+  <InputLimit Value="500" Index="-1" />
   <LogFont Value="Arial" Index="2" />
   <TapeFont Value="Arial" Index="2" />
   <TMFont Value="Global Serif" Index="4" />
   <HeaderColor Value="#FFFFA200" Index="6" />
-  <TapeLength Value="150" Index="-1" />
+  <TapeLength Value="512" Index="-1" />
   <BlankSymbol Value="ε" Index="-1" />
 </Settings>

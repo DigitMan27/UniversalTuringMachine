@@ -85,7 +85,7 @@ namespace UniversalTM
                         return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count);
                     }
                 }
-                else if (!Regex.IsMatch(line, "(\\s)*[Accept:](\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*") && acceptStateDefined == false)
+                else if (!Regex.IsMatch(line, "(\\s)*[Accept:](\\s)*[\\w+]\\s*") && acceptStateDefined == false)
                 {
                     return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count);
                 }
@@ -125,7 +125,7 @@ namespace UniversalTM
                         return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count);
                     }
                 }
-                else if (!Regex.IsMatch(line, "(\\s)*[Reject:](\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*") && rejectStateDefined == false)
+                else if (!Regex.IsMatch(line, "(\\s)*[Reject:](\\s)*[\\w+]\\s*") && rejectStateDefined == false)
                 {
                     return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count);
                 }
