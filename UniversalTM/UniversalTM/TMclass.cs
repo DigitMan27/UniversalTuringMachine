@@ -38,7 +38,7 @@ namespace UniversalTM
                 {
                     continue;
                 }
-                else if (Regex.IsMatch(line, "(\\s)*[States:](\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*") && statesDefined == false) // states
+                else if (Regex.IsMatch(line, "(\\s)*[States:](\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*") && statesDefined == false) // states -> covert it to ECMA
                 {
                     try
                     {
@@ -59,10 +59,10 @@ namespace UniversalTM
                     {
                         return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count);
                     }
-                } else if (!Regex.IsMatch(line, "(\\s)*[States:](\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*") && statesDefined == false) { 
+                } else if (!Regex.IsMatch(line, "^(\\s)*[States:](\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*$") && statesDefined == false) { 
                     return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count); 
                 } 
-                else if (Regex.IsMatch(line, "(\\s)*[Accept:](\\s)*[\\w+]\\s*") && statesDefined == true && acceptStateDefined == false) // accept state
+                else if (Regex.IsMatch(line, "^\\s*[Accept:]\\s*\\w+\\s*",RegexOptions.ECMAScript) && statesDefined == true && acceptStateDefined == false) //Accept
                 {
                     try
                     {
@@ -85,11 +85,11 @@ namespace UniversalTM
                         return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count);
                     }
                 }
-                else if (!Regex.IsMatch(line, "(\\s)*[Accept:](\\s)*[\\w+]\\s*") && acceptStateDefined == false)
+                else if (!Regex.IsMatch(line, "^\\s*[Accept:]\\s*\\w+\\s*", RegexOptions.ECMAScript) && acceptStateDefined == false) 
                 {
                     return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count);
                 }
-                else if (Regex.IsMatch(line, "(\\s)*[Reject:](\\s)*[\\w+]\\s*") && statesDefined == true && acceptStateDefined == true && rejectStateDefined == false) // reject state
+                else if (Regex.IsMatch(line, "^\\s*[Reject:]\\s*\\w+\\s*", RegexOptions.ECMAScript) && statesDefined == true && acceptStateDefined == true && rejectStateDefined == false) //Reject
                 {
                     try
                     {
@@ -125,11 +125,11 @@ namespace UniversalTM
                         return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count);
                     }
                 }
-                else if (!Regex.IsMatch(line, "(\\s)*[Reject:](\\s)*[\\w+]\\s*") && rejectStateDefined == false)
+                else if (!Regex.IsMatch(line, "^\\s*[Reject:]\\s*\\w+\\s*", RegexOptions.ECMAScript) && rejectStateDefined == false)
                 {
                     return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count);
                 }
-                else if (!string.IsNullOrEmpty(line.Trim()) && statesDefined && acceptStateDefined && rejectStateDefined && states.Count > 1)
+                else if (!string.IsNullOrEmpty(line.Trim()) && statesDefined && acceptStateDefined && rejectStateDefined && states.Count > 1) // look these more 
                 {
                     try
                     {
@@ -137,7 +137,7 @@ namespace UniversalTM
                         System.Console.WriteLine("tokens");
                         try
                         {
-                            string[] s_line = Regex.Split(line, "->");
+                            string[] s_line = Regex.Split(line, "^->$"); // look it up
                             for (int i = 0; i < s_line.Length; i++)
                             {
                                 string[] tok = Regex.Split(s_line[i], ",");

@@ -39,6 +39,7 @@ namespace UniversalTM
         //End 
         
         private bool termination = false;
+        private bool _is_running = false;
         private char[] input; // user input
         private int output_len = 0; // increment (not used yet)
 
@@ -139,7 +140,7 @@ namespace UniversalTM
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Success .\n"));
                     this.clearTM.IsEnabled = true;
                     this.loadTM.IsEnabled = false;
-                    if (tape_data.Columns.Count > 0)
+                    if (input!=null)
                     {
                         this.exec.IsEnabled = true;
                     }
@@ -174,7 +175,13 @@ namespace UniversalTM
 
         private void Write2Tape(object sender, RoutedEventArgs e)
         {
+            if (this.input_box.Text.Contains(this.blank_symbol))
+            {
+                MessageBox.Show("The blank symbol( " + this.blank_symbol + " ) detected on your input\n","Error");
+                return;
+            }
             input = this.input_box.Text.ToCharArray();
+            
             if(input.Length==0)
             {
                 
@@ -226,6 +233,12 @@ namespace UniversalTM
 
         private void Execute(object sender, RoutedEventArgs e)
         {
+
+            for (int i = 0; i < output_len+1; i++)
+            {
+                this.tape_data.Columns[i].HeaderStyle = null;
+            }
+
             this.exec.IsEnabled = false;
             this.clearTM.IsEnabled = false;
             this.clearTape.IsEnabled = false;
@@ -233,6 +246,8 @@ namespace UniversalTM
             this.stop.IsEnabled = true;
             this.termination = false;
             this.exec_speed.IsEnabled = false;
+            this.menu.IsEnabled = false;
+            this._is_running = true;
             double time;
             
             time = (string.IsNullOrEmpty(exec_speed.Text) || double.Parse(exec_speed.Text) < 0) ? time = 0 : time = double.Parse(exec_speed.Text); // default value if empty or negative value .
@@ -264,6 +279,7 @@ namespace UniversalTM
             this.insertToTape.IsEnabled = true;
             this.exec_speed.IsEnabled = true;
             this.stop.IsEnabled = false;
+            this.menu.IsEnabled = true;
         }
 
         private void HeaderUpdate(int pos,int move)
@@ -288,7 +304,7 @@ namespace UniversalTM
 
         }
 
-        private void Execute_in_Thread(DataTable tapeData,double time)
+        private void Execute_in_Thread(DataTable tapeData,double time) // do something if table is out of space | detailed mesgs when running TM
         {
             delUpdateTextBlock DupdateTextBlock = new delUpdateTextBlock(UpdateTXT);
             delUpdateTape Dtape_update = new delUpdateTape(UpdateTable);
@@ -418,12 +434,13 @@ namespace UniversalTM
 
                 this.exec.IsEnabled = false;
                 this.clearTape.IsEnabled = false;
-                this.tape_data.ColumnHeaderStyle = null;
+                //this.tape_data.ColumnHeaderStyle = null;
                 //this.tape_data.Columns.Clear();
+                if (!_is_running) output_len = input.Length;
                 DataRow row = tapeData.Rows[0];
                 for (int i = 0; i < output_len; i++)
                 {
-
+                    this.tape_data.Columns[i].HeaderStyle = null;
                     row[i] = blank_symbol;
                 }
 
@@ -431,6 +448,7 @@ namespace UniversalTM
                 this.tape_data.ItemsSource = tapeData.DefaultView;
                 //InitTape();
                 this.log.Inlines.Add(new Run("[+] Input removed from the tape .\n"));
+                input = null;
             }
         }
 
@@ -443,6 +461,8 @@ namespace UniversalTM
             this.clearTape.IsEnabled = true;
             this.insertToTape.IsEnabled = true;
             this.exec_speed.IsEnabled = true;
+            this.menu.IsEnabled = true;
+            this._is_running = false;
             this.log.Inlines.Add(new Run("[+] Turing machine simulation stopped .\n"));
 
         }
