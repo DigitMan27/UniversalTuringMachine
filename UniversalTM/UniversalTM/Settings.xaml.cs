@@ -116,6 +116,8 @@ namespace UniversalTM
                 blankStr = "ε";
             }
             
+
+
             UpdateLayout();
 
             // with these i pass the values for the header_color and InputShowValue so the user don't have to restart the app .

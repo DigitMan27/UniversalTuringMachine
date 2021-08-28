@@ -8,9 +8,9 @@ namespace UniversalTM
     {
         NO_STATES = 1, // Occurs if 1st line is not of the form States:q1,q2,q3 ... or if the second line of stating the accept state is missing .
         NO_DESCRIPTION = 2, // Occurs if there are not or are wrong typed the transition rules of the turing machine .
-        NO_ACCEPT = 3,
-        NO_REJECT = 4,
-        SAME_STATE = 5,
+        NO_ACCEPT = 3, // no accept state declared
+        NO_REJECT = 4, // no reject state declared
+        SAME_STATE = 5, // accept state = reject state
         SUCCESS=0 // success .
     }
     class TMclass
@@ -34,11 +34,11 @@ namespace UniversalTM
             {
                 line_count += 1;
 
-                if (line == null || Regex.IsMatch(line, "(\\s)*[\\\\]([\\s*\\w*\\s* | \\s*])*")) // single line comments
+                if (string.IsNullOrEmpty(line) || Regex.IsMatch(line, "(\\s)*[\\\\]([\\s*\\w*\\s* | \\s*])*")) // single line comments
                 {
                     continue;
                 }
-                else if (Regex.IsMatch(line, "(\\s)*[States:](\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*") && statesDefined == false) // states -> covert it to ECMA
+                else if (Regex.IsMatch(line, "(\\s)*States:(\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*") && statesDefined == false) // states
                 {
                     try
                     {
@@ -59,10 +59,10 @@ namespace UniversalTM
                     {
                         return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count);
                     }
-                } else if (!Regex.IsMatch(line, "^(\\s)*[States:](\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*$") && statesDefined == false) { 
+                } else if (!Regex.IsMatch(line, "^(\\s)*States:(\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*$") && statesDefined == false) { 
                     return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count); 
                 } 
-                else if (Regex.IsMatch(line, "^\\s*[Accept:]\\s*\\w+\\s*",RegexOptions.ECMAScript) && statesDefined == true && acceptStateDefined == false) //Accept
+                else if (Regex.IsMatch(line, "\\s*Accept:\\s*\\w+\\s*") && statesDefined == true && acceptStateDefined == false) //Accept
                 {
                     try
                     {
@@ -85,11 +85,11 @@ namespace UniversalTM
                         return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count);
                     }
                 }
-                else if (!Regex.IsMatch(line, "^\\s*[Accept:]\\s*\\w+\\s*", RegexOptions.ECMAScript) && acceptStateDefined == false) 
+                else if (!Regex.IsMatch(line, "\\s*Accept:\\s*\\w+\\s*") && acceptStateDefined == false) 
                 {
                     return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count);
                 }
-                else if (Regex.IsMatch(line, "^\\s*[Reject:]\\s*\\w+\\s*", RegexOptions.ECMAScript) && statesDefined == true && acceptStateDefined == true && rejectStateDefined == false) //Reject
+                else if (Regex.IsMatch(line, "\\s*Reject:\\s*\\w+\\s*") && statesDefined == true && acceptStateDefined == true && rejectStateDefined == false) //Reject
                 {
                     try
                     {
@@ -125,11 +125,11 @@ namespace UniversalTM
                         return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count);
                     }
                 }
-                else if (!Regex.IsMatch(line, "^\\s*[Reject:]\\s*\\w+\\s*", RegexOptions.ECMAScript) && rejectStateDefined == false)
+                else if (!Regex.IsMatch(line, "\\s*Reject:\\s*\\w+\\s*") && rejectStateDefined == false)
                 {
                     return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count);
                 }
-                else if (!string.IsNullOrEmpty(line.Trim()) && statesDefined && acceptStateDefined && rejectStateDefined && states.Count > 1) // look these more 
+                else if (Regex.IsMatch(line, "\\s*\\w+,[\\w|\\W]->\\s*([\\w|\\W],)?[R|L|N],\\w+\\s*") && statesDefined && acceptStateDefined && rejectStateDefined && states.Count > 1) // look these more 
                 {
                     try
                     {
@@ -137,7 +137,7 @@ namespace UniversalTM
                         System.Console.WriteLine("tokens");
                         try
                         {
-                            string[] s_line = Regex.Split(line, "^->$"); // look it up
+                            string[] s_line = Regex.Split(line, "->");
                             for (int i = 0; i < s_line.Length; i++)
                             {
                                 string[] tok = Regex.Split(s_line[i], ",");
@@ -185,6 +185,9 @@ namespace UniversalTM
                     {
                         return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count);
                     }
+                }else if(!Regex.IsMatch(line, "\\s*\\w+,[\\w|\\W]->\\s*([\\w|\\W],)?[R|L|N],\\w+\\s*") && statesDefined && acceptStateDefined && rejectStateDefined && states.Count > 1)
+                {
+                    return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count);
                 }
                     
             }

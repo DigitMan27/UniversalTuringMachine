@@ -42,6 +42,7 @@ namespace UniversalTM
         private bool _is_running = false;
         private char[] input; // user input
         private int output_len = 0; // increment (not used yet)
+        private string init_dir = "c:\\";
 
         private Tuple<List<State>, Flags, int> states = null;
         
@@ -110,10 +111,11 @@ namespace UniversalTM
             string filepath = string.Empty;
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.InitialDirectory = init_dir;
             openFileDialog.Filter = "uTM files (*.uTM)|*.uTM";
             openFileDialog.FilterIndex = 2;
             openFileDialog.RestoreDirectory = true;
+            openFileDialog.Multiselect = false;
             Nullable<bool> result = openFileDialog.ShowDialog();
 
             if (result == true)
@@ -124,6 +126,7 @@ namespace UniversalTM
             }
             if (!filepath.Equals(""))
             {
+                init_dir = filepath;
                 StreamReader reader = new StreamReader(filepath);
                 int line_n = 0;
 
@@ -169,7 +172,8 @@ namespace UniversalTM
                     this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Same Accept and Reject State) .\n"));
                 }
-
+                reader.Close();
+                
             }
         }
 
@@ -315,9 +319,6 @@ namespace UniversalTM
             int count = 0;
             State state = states.Item1[0];
 
-
-            //this.Dispatcher.BeginInvoke(DheaderUpdate, header, 0);
-
             Stopwatch timer = new Stopwatch();
 
             while (termination == false)
@@ -336,7 +337,7 @@ namespace UniversalTM
                 {
                     try
                     {
-                        if (state.accept /*== states.Item1[(states.Item1.Count) - 1]*/)
+                        if (state.accept)
                         {
                             this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was successfuly accepted by the Turing machine .\n");
                             this.Dispatcher.BeginInvoke(DenableBtns);
@@ -354,7 +355,7 @@ namespace UniversalTM
                         string i = tapeData.Rows[0][header].ToString();
                         if (count < InputShowValue)
                         {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input " + i + " .\n");
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] State: "+state.Name+" Input " + i + " .\n");
                             count += 1;
                             if (count == InputShowValue)
                             {
@@ -427,7 +428,7 @@ namespace UniversalTM
         }
         
 
-        private void ClearTape(object sender, RoutedEventArgs e) // NOTE: do not know what happens when we write past the input len
+        private void ClearTape(object sender, RoutedEventArgs e) 
         {
             if (this.tape_data.Columns.Count > 0)
             {
