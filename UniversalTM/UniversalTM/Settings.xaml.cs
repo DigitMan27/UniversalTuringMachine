@@ -10,10 +10,6 @@ using System.Xml;
 
 namespace UniversalTM
 {
-    /// <summary>
-    /// Interaction logic for Settings.xaml
-    /// Functionality of the Settings window
-    /// </summary>
     public partial class Settings : Window
     {
         private MainWindow window;

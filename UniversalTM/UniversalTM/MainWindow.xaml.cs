@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
@@ -15,9 +14,6 @@ using System.Xml;
 
 namespace UniversalTM
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private Thread execTM_t;
@@ -56,6 +52,12 @@ namespace UniversalTM
                 LoadSettings();
             }
             InitTape();
+        }
+
+        private void ShowSettings(object sender, RoutedEventArgs e)
+        {
+            this.window_setting = new Settings(this);
+            this.window_setting.Show();
         }
 
         private void LoadSettings()
@@ -99,11 +101,8 @@ namespace UniversalTM
             this.tape_data.ItemsSource = tapeData.DefaultView;
         }
 
-        private void Exit(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown(0);
-        }
-
+        
+        /* Button Functions*/
         private void LoadTM(object sender, RoutedEventArgs e)
         {
             if(this.TM_code.Inlines.Count>0)
@@ -145,7 +144,7 @@ namespace UniversalTM
                     this.loadTM.IsEnabled = false;
                     //if (input!=null)
                     //{
-                        this.exec.IsEnabled = true;
+                    this.exec.IsEnabled = true;
                     //}
                 }else if(states.Item2 == Flags.NO_STATES)
                 {
@@ -264,170 +263,6 @@ namespace UniversalTM
 
         }
 
-        private void UpdateTXT(string txt)
-        {
-            this.log.Inlines.Add(new Run(txt));
-            
-        }
-
-        private void UpdateTable(DataTable tp)
-        {
-            this.tape_data.ItemsSource = tp.DefaultView;
-        }
-
-        private void EnableBtns()
-        {
-            this.exec.IsEnabled = true;
-            this.clearTM.IsEnabled = true;
-            this.clearTape.IsEnabled = true;
-            this.insertToTape.IsEnabled = true;
-            this.exec_speed.IsEnabled = true;
-            this.stop.IsEnabled = false;
-            this.menu.IsEnabled = true;
-        }
-
-        private void HeaderUpdate(int pos,int move)
-        {
-            System.Collections.ObjectModel.ObservableCollection<System.Windows.Controls.DataGridColumn> cols = this.tape_data.Columns;
-
-            Style style = new Style(typeof(System.Windows.Controls.Primitives.DataGridColumnHeader));
-            style.Setters.Add(new Setter
-            {
-                Property = BackgroundProperty,
-                Value = new BrushConverter().ConvertFromString(header_color) as SolidColorBrush
-            }) ;
-            style.Setters.Add(new Setter
-            {
-                Property = BorderBrushProperty,
-                Value = Brushes.Black
-            });
-
-            cols[pos].HeaderStyle = style;
-            if (move > 0) { cols[pos - 1].HeaderStyle = null; }
-            else if(move < 0 && pos < tapeData.Columns.Count-1) { cols[pos + 1].HeaderStyle = null; }
-
-        }
-
-        private void Execute_in_Thread(DataTable tapeData,double time) // do something if table is out of space | detailed mesgs when running TM
-        {
-            delUpdateTextBlock DupdateTextBlock = new delUpdateTextBlock(UpdateTXT);
-            delUpdateTape Dtape_update = new delUpdateTape(UpdateTable);
-            delEnableBtns DenableBtns = new delEnableBtns(EnableBtns);
-            delUpdateHeader DheaderUpdate = new delUpdateHeader(HeaderUpdate);
-
-            int header = -1;
-            int count = 0;
-            State state = states.Item1[0];
-
-            Stopwatch timer = new Stopwatch();
-
-            while (termination == false)
-            {
-                if (header == -1)
-                {
-                    this.Dispatcher.BeginInvoke(DheaderUpdate, header + 1, 0);
-                    header = 0;
-                    timer.Start();
-
-                    while (timer.Elapsed < TimeSpan.FromSeconds(time)) ;
-                    timer.Stop();
-                    timer.Reset();
-                }
-                else
-                {
-                    try
-                    {
-                        if (state.accept)
-                        {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was successfuly accepted by the Turing machine .\n");
-                            this.Dispatcher.BeginInvoke(DenableBtns);
-
-                            break;
-                        }
-                        else if(state.reject)
-                        {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was not successfuly accepted by the Turing machine .\n");
-                            this.Dispatcher.BeginInvoke(DenableBtns);
-
-                            break;
-                        }
-
-                        string i = tapeData.Rows[0][header].ToString();
-                        if (count < InputShowValue)
-                        {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] State: "+state.Name+" Input " + i + " .\n");
-                            count += 1;
-                            if (count == InputShowValue)
-                            {
-                                this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input display limit reached (Limit(#Lines)) " + count + " .\n");
-                            }
-                        }
-
-
-                        if (state.writeToTape.ContainsKey(i))
-                        {
-                            tapeData.Rows[0][header] = state.writeToTape[i];
-                            this.Dispatcher.BeginInvoke(Dtape_update, tapeData);
-                        }
-
-                        int move = (int)state.moveToTape[i];
-                        if ((header + move) >= 0)
-                        {
-                            header += move;
-                            if (header > output_len)
-                                output_len = header+1;
-                            if (header <= tapeData.Columns.Count - 1)
-                                this.Dispatcher.BeginInvoke(DheaderUpdate, header, move);
-                        }
-
-                        state = state.nextState[i];
-                        timer.Start();
-
-                        while (timer.Elapsed < TimeSpan.FromSeconds(time)) ;
-                        timer.Stop();
-                        timer.Reset();
-
-                    }
-                    catch
-                    {
-
-                        this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] There is not declared transition for this input at this state(Failure).\n");
-                        this.Dispatcher.BeginInvoke(DenableBtns);
-                        timer.Stop();
-                        break;
-                    }
-                }
-               
-
-            }
-            timer.Stop();
-            var ct = new CancellationTokenSource();
-            CancellationToken tok = ct.Token;
-            Task.Factory.StartNew(() =>
-            {
-                if (tok.IsCancellationRequested)
-                {
-                    try
-                    {
-                        tok.ThrowIfCancellationRequested();
-                    }
-                    catch
-                    {
-                        //nothing
-                    }
-                }
-            }, tok);
-            try
-            {
-                ct.Cancel();
-            }
-            catch(OperationCanceledException) {
-                return;
-            }
-            
-        }
-        
-
         private void ClearTape(object sender, RoutedEventArgs e) 
         {
             if (this.tape_data.Columns.Count > 0)
@@ -468,10 +303,176 @@ namespace UniversalTM
 
         }
 
-        private void ShowSettings(object sender, RoutedEventArgs e)
+        private void Exit(object sender, RoutedEventArgs e)
         {
-            this.window_setting = new Settings(this);
-            this.window_setting.Show();
+            Application.Current.Shutdown(0);
+        }
+
+        /* Thread Function*/
+        private void Execute_in_Thread(DataTable tapeData, double time) // do something if table is out of space | detailed mesgs when running TM
+        {
+            delUpdateTextBlock DupdateTextBlock = new delUpdateTextBlock(UpdateTXT);
+            delUpdateTape Dtape_update = new delUpdateTape(UpdateTable);
+            delEnableBtns DenableBtns = new delEnableBtns(EnableBtns);
+            delUpdateHeader DheaderUpdate = new delUpdateHeader(HeaderUpdate);
+
+            int header = -1;
+            int count = 0;
+            State state = states.Item1[0];
+
+            Stopwatch timer = new Stopwatch();
+
+            while (termination == false)
+            {
+                if (header == -1)
+                {
+                    this.Dispatcher.BeginInvoke(DheaderUpdate, header + 1, 0);
+                    header = 0;
+                    timer.Start();
+
+                    while (timer.Elapsed < TimeSpan.FromSeconds(time)) ;
+                    timer.Stop();
+                    timer.Reset();
+                }
+                else
+                {
+                    try
+                    {
+                        if (state.accept)
+                        {
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was successfuly accepted by the Turing machine .\n");
+                            this.Dispatcher.BeginInvoke(DenableBtns);
+
+                            break;
+                        }
+                        else if (state.reject)
+                        {
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input was not successfuly accepted by the Turing machine .\n");
+                            this.Dispatcher.BeginInvoke(DenableBtns);
+
+                            break;
+                        }
+
+                        string i = tapeData.Rows[0][header].ToString();
+                        if (count < InputShowValue)
+                        {
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] State: " + state.Name + " Input " + i + " .\n");
+                            count += 1;
+                            if (count == InputShowValue)
+                            {
+                                this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] Input display limit reached (Limit(#Lines)) " + count + " .\n");
+                            }
+                        }
+
+
+                        if (state.writeToTape.ContainsKey(i))
+                        {
+                            tapeData.Rows[0][header] = state.writeToTape[i];
+                            this.Dispatcher.BeginInvoke(Dtape_update, tapeData);
+                        }
+
+                        int move = (int)state.moveToTape[i];
+                        if ((header + move) >= 0)
+                        {
+                            header += move;
+                            if (header > output_len)
+                                output_len = header + 1;
+                            if (header <= tapeData.Columns.Count - 1)
+                                this.Dispatcher.BeginInvoke(DheaderUpdate, header, move);
+                        }
+
+                        state = state.nextState[i];
+                        timer.Start();
+
+                        while (timer.Elapsed < TimeSpan.FromSeconds(time)) ;
+                        timer.Stop();
+                        timer.Reset();
+
+                    }
+                    catch
+                    {
+
+                        this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] There is not declared transition for this input at this state(Failure).\n");
+                        this.Dispatcher.BeginInvoke(DenableBtns);
+                        timer.Stop();
+                        break;
+                    }
+                }
+
+
+            }
+            timer.Stop();
+            var ct = new CancellationTokenSource();
+            CancellationToken tok = ct.Token;
+            Task.Factory.StartNew(() =>
+            {
+                if (tok.IsCancellationRequested)
+                {
+                    try
+                    {
+                        tok.ThrowIfCancellationRequested();
+                    }
+                    catch
+                    {
+                        //nothing
+                    }
+                }
+            }, tok);
+            try
+            {
+                ct.Cancel();
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+        }
+
+
+        /* Delegate Functions*/
+        private void UpdateTXT(string txt)
+        {
+            this.log.Inlines.Add(new Run(txt));
+
+        }
+
+        private void UpdateTable(DataTable tp)
+        {
+            this.tape_data.ItemsSource = tp.DefaultView;
+        }
+
+        private void EnableBtns()
+        {
+            this.exec.IsEnabled = true;
+            this.clearTM.IsEnabled = true;
+            this.clearTape.IsEnabled = true;
+            this.insertToTape.IsEnabled = true;
+            this.exec_speed.IsEnabled = true;
+            this.stop.IsEnabled = false;
+            this.menu.IsEnabled = true;
+        }
+
+        private void HeaderUpdate(int pos, int move)
+        {
+            System.Collections.ObjectModel.ObservableCollection<System.Windows.Controls.DataGridColumn> cols = this.tape_data.Columns;
+
+            Style style = new Style(typeof(System.Windows.Controls.Primitives.DataGridColumnHeader));
+            style.Setters.Add(new Setter
+            {
+                Property = BackgroundProperty,
+                Value = new BrushConverter().ConvertFromString(header_color) as SolidColorBrush
+            });
+            style.Setters.Add(new Setter
+            {
+                Property = BorderBrushProperty,
+                Value = Brushes.Black
+            });
+
+            cols[pos].HeaderStyle = style;
+            if (move > 0) { cols[pos - 1].HeaderStyle = null; }
+            else if (move < 0 && pos < tapeData.Columns.Count - 1) { cols[pos + 1].HeaderStyle = null; }
+
         }
     }
 }

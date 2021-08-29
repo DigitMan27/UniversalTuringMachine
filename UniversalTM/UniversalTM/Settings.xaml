@@ -97,7 +97,7 @@
             </Separator.RenderTransform>
         </Separator>
         <Label Content="Tape Length:" Grid.Column="1" HorizontalAlignment="Left" Margin="11,144,0,0" Grid.Row="1" VerticalAlignment="Top" Width="78"/>
-        <TextBox x:Name="tape_len" Grid.Column="1" HorizontalAlignment="Left" Margin="98,148,0,0" Grid.Row="1" Text="512" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" MaxLines="1" MinLines="1" InputScope="Number"/>
+        <TextBox x:Name="tape_len" Grid.Column="1" HorizontalAlignment="Left" Margin="98,148,0,0" Grid.Row="1" Text="256" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" MaxLines="1" MinLines="1" InputScope="Number"/>
         <Label Content="Blank Symbol:" Grid.Column="1" HorizontalAlignment="Left" Margin="11,175,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90"/>
         <TextBox x:Name="blank_symb" Grid.Column="1" HorizontalAlignment="Left" Margin="98,179,0,0" Grid.Row="1" Text="ε" TextWrapping="Wrap" VerticalAlignment="Top" Width="47" MaxLines="1" InputScope="OneChar" MaxLength="1"/>
 
