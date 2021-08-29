@@ -143,10 +143,10 @@ namespace UniversalTM
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Success .\n"));
                     this.clearTM.IsEnabled = true;
                     this.loadTM.IsEnabled = false;
-                    if (input!=null)
-                    {
+                    //if (input!=null)
+                    //{
                         this.exec.IsEnabled = true;
-                    }
+                    //}
                 }else if(states.Item2 == Flags.NO_STATES)
                 {
                     this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
@@ -190,7 +190,7 @@ namespace UniversalTM
             {
                 
                 this.log.Inlines.Add(new Run("[+] Input is Empty\n"));
-                this.exec.IsEnabled = false;
+                //this.exec.IsEnabled = false;
             }
             else
             {
@@ -433,7 +433,7 @@ namespace UniversalTM
             if (this.tape_data.Columns.Count > 0)
             {
 
-                this.exec.IsEnabled = false;
+                //this.exec.IsEnabled = false;
                 this.clearTape.IsEnabled = false;
                 //this.tape_data.ColumnHeaderStyle = null;
                 //this.tape_data.Columns.Clear();
