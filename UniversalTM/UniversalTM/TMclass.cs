@@ -8,27 +8,33 @@ namespace UniversalTM
     {
         NO_STATES = 1, // Occurs if 1st line is not of the form States:q1,q2,q3 ... or if the second line of stating the accept state is missing .
         NO_DESCRIPTION = 2, // Occurs if there are not or are wrong typed the transition rules of the turing machine .
-        NO_ACCEPT = 3, // no accept state declared
-        NO_REJECT = 4, // no reject state declared
+        NO_ACCEPT = 3, // no accept state defined
+        NO_REJECT = 4, // no reject state defined
         SAME_STATE = 5, // accept state = reject state
+        NO_INPUT=6, // Alphabet not declared or contains blank symbol
+        UNKNOWN_STATE=7, // The machine uses an undefined state
         SUCCESS=0 // success .
     }
     class TMclass
     {
         private string filename;
-        public TMclass(string filename)
+        private string blankSymbol;
+        public TMclass(string filename,string blank)
         {
             this.filename = filename;
+            this.blankSymbol = blank;
         }
 
-        public Tuple<List<State>,Flags,int> TM()
+        public Tuple<List<State>,Flags,int, List<string>> TM()
         {
             string[] lines = System.IO.File.ReadAllLines(this.filename);
+            List<string> declaredInput = new List<string>();
             List<State> states = new List<State>();
             int line_count = -1;
             bool statesDefined = false;
             bool acceptStateDefined = false;
             bool rejectStateDefined = false;
+            bool inputDefined = false;
             
             foreach (string line in lines)
             {
@@ -38,7 +44,7 @@ namespace UniversalTM
                 {
                     continue;
                 }
-                else if (Regex.IsMatch(line, "(\\s)*States:(\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*") && statesDefined == false) // states
+                else if (Regex.IsMatch(line, "^\\s*States:\\s*\\w+(\\s*,\\s*\\w+)*\\s*$") && statesDefined == false) // states
                 {
                     try
                     {
@@ -57,12 +63,14 @@ namespace UniversalTM
                     }
                     catch
                     {
-                        return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count);
+                        return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count, declaredInput);
                     }
-                } else if (!Regex.IsMatch(line, "^(\\s)*States:(\\s)*[\\w+](\\s*,\\s*\\w+)*\\s*$") && statesDefined == false) { 
-                    return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count); 
-                } 
-                else if (Regex.IsMatch(line, "\\s*Accept:\\s*\\w+\\s*") && statesDefined == true && acceptStateDefined == false) //Accept
+                }
+                else if (!Regex.IsMatch(line, "^\\s*States:\\s*\\w+(\\s*,\\s*\\w+)*\\s*$") && statesDefined == false)
+                {
+                    return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count, declaredInput);
+                }
+                else if (Regex.IsMatch(line, "^\\s*Accept:\\s*\\w+\\s*$") && statesDefined == true && acceptStateDefined == false) //Accept
                 {
                     try
                     {
@@ -82,14 +90,14 @@ namespace UniversalTM
                     }
                     catch
                     {
-                        return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count);
+                        return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count, declaredInput);
                     }
                 }
-                else if (!Regex.IsMatch(line, "\\s*Accept:\\s*\\w+\\s*") && acceptStateDefined == false) 
+                else if (!Regex.IsMatch(line, "^\\s*Accept:\\s*\\w+\\s*$") && acceptStateDefined == false)
                 {
-                    return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count);
+                    return Tuple.Create(new List<State>() { }, Flags.NO_ACCEPT, line_count, declaredInput);
                 }
-                else if (Regex.IsMatch(line, "\\s*Reject:\\s*\\w+\\s*") && statesDefined == true && acceptStateDefined == true && rejectStateDefined == false) //Reject
+                else if (Regex.IsMatch(line, "^\\s*Reject:\\s*\\w+\\s*$") && statesDefined == true && acceptStateDefined == true && rejectStateDefined == false) //Reject
                 {
                     try
                     {
@@ -106,35 +114,60 @@ namespace UniversalTM
                             bool v2 = states.Find(o => o.Name.Equals(reject_state_split[reject_state_split.Length - 1])).reject = true;
                             try
                             {
-                                if (v1==true && v2==true)
+                                if (v1 == true && v2 == true)
                                 {
                                     throw new Exception();
                                 }
                             }
-                            catch(Exception)
+                            catch (Exception)
                             {
-                                return Tuple.Create(new List<State>() { }, Flags.SAME_STATE, line_count);
+                                return Tuple.Create(new List<State>() { }, Flags.SAME_STATE, line_count, declaredInput);
                             }
 
                         }
                         rejectStateDefined = true;
 
                     }
-                    catch(Exception)
+                    catch (Exception)
                     {
-                        return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count);
+                        return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count, declaredInput);
                     }
                 }
-                else if (!Regex.IsMatch(line, "\\s*Reject:\\s*\\w+\\s*") && rejectStateDefined == false)
+                else if (!Regex.IsMatch(line, "^\\s*Reject:\\s*\\w+\\s*$") && rejectStateDefined == false)
                 {
-                    return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count);
+                    return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count, declaredInput);
                 }
-                else if (Regex.IsMatch(line, "\\s*\\w+,[\\w|\\W]->\\s*([\\w|\\W],)?[R|L|N],\\w+\\s*") && statesDefined && acceptStateDefined && rejectStateDefined && states.Count > 1) // look these more 
+                else if (Regex.IsMatch(line, pattern: "^\\s*Input:\\s*\\w(\\s*,\\s*\\w)*\\s*$") && statesDefined && acceptStateDefined && rejectStateDefined && inputDefined == false)
+                {
+                    try
+                    {
+                        string input_state_line = line;
+                        string pattern = "[\\s*Input:\\s*]";
+                        string[] input_state_split = Regex.Split(input_state_line.Trim(), pattern);
+                        string[] input_split = Regex.Split(input_state_split[input_state_split.Length - 1], "\\s*,\\s*");
+                        foreach (string input in input_split)
+                        {
+                            if (input.Equals(blankSymbol))
+                                throw new Exception();
+                            declaredInput.Add(input);
+                        }
+                        inputDefined = true;
+                    }
+                    catch
+                    {
+                        return Tuple.Create(new List<State>() { }, Flags.NO_INPUT, line_count, declaredInput);
+                    }
+                }
+                else if (!Regex.IsMatch(line, pattern: "^\\s*Input:\\s*\\w(\\s*,\\s*\\w)*\\s*$") && inputDefined == false)
+                {
+                    return Tuple.Create(new List<State>() { }, Flags.NO_INPUT, line_count, declaredInput);
+                }
+                else if (Regex.IsMatch(line, "^\\s*\\w+,[\\w|\\W]->\\s*([\\w|\\W],)?[R|L|N],\\w+\\s*$") && statesDefined && acceptStateDefined && rejectStateDefined && inputDefined && states.Count > 1) // look these more 
                 {
                     try
                     {
                         List<string> cu = new List<string>();
-                        System.Console.WriteLine("tokens");
+                        
                         try
                         {
                             string[] s_line = Regex.Split(line, "->");
@@ -149,56 +182,87 @@ namespace UniversalTM
                         }
                         catch
                         {
-                            return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count);
-                        }
-                        State state = states.Find(o => o.Name.Equals(cu[0]));
-
-                        string input = cu[1];
-                        if (input == string.Empty)
-                        {
-                            return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count);
+                            return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count, declaredInput);
                         }
 
-                        if (cu.Count == 4)
+                        try
                         {
-                            string move;
-                            State Nextstate;
-                            move = cu[2];
-                            Nextstate = states.Find(o => o.Name == cu[3]);
-                            state.setMove2Tape(input, move);
-                            state.setNextState(input, Nextstate);
+                            State state = states.Find(o => o.Name.Equals(cu[0]));
+                            if (state == null)
+                                throw new Exception();
+                        
+                        
 
+                            string input = cu[1];
+                            if (input == string.Empty)
+                            {
+                                return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count, declaredInput);
+                            }
+
+                            if (cu.Count == 4)
+                            {
+                                string move;
+                                State Nextstate;
+                                move = cu[2];
+                                try
+                                {
+                                    Nextstate = states.Find(o => o.Name.Equals(cu[3], StringComparison.Ordinal));
+                                    if (Nextstate == null)
+                                        throw new Exception();
+                                }
+                                catch
+                                {
+                                    return Tuple.Create(new List<State>() { }, Flags.UNKNOWN_STATE, line_count, declaredInput);
+                                }
+                                state.setMove2Tape(input, move);
+                                state.setNextState(input, Nextstate);
+
+                            }
+                            else if (cu.Count == 5)
+                            {
+                                string output, move;
+                                State Nextstate;
+                                output = cu[2];
+                                move = cu[3];
+                                try
+                                {
+                                    Nextstate = states.Find(o => o.Name.Equals(cu[4], StringComparison.Ordinal));
+                                    if (Nextstate == null)
+                                        throw new Exception();
+                                }
+                                catch {
+                                    return Tuple.Create(new List<State>() { }, Flags.UNKNOWN_STATE, line_count, declaredInput);
+                                }
+                            
+                                state.setWrite2Tape(input, output);
+                                state.setMove2Tape(input, move);
+                                state.setNextState(input, Nextstate);
+                            }
                         }
-                        else if (cu.Count == 5)
+                        catch
                         {
-                            string output, move;
-                            State Nextstate;
-                            output = cu[2];
-                            move = cu[3];
-                            Nextstate = states.Find(o => o.Name == cu[4]);
-                            state.setWrite2Tape(input, output);
-                            state.setMove2Tape(input, move);
-                            state.setNextState(input, Nextstate);
+                            return Tuple.Create(new List<State>() { }, Flags.UNKNOWN_STATE, line_count, declaredInput);
                         }
                     }
                     catch (Exception)
                     {
-                        return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count);
+                        return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count, declaredInput);
                     }
-                }else if(!Regex.IsMatch(line, "\\s*\\w+,[\\w|\\W]->\\s*([\\w|\\W],)?[R|L|N],\\w+\\s*") && statesDefined && acceptStateDefined && rejectStateDefined && states.Count > 1)
+                }
+                else if (!Regex.IsMatch(line, "^\\s*\\w+,[\\w|\\W]->\\s*([\\w|\\W],)?[R|L|N],\\w+\\s*$") && statesDefined && acceptStateDefined && rejectStateDefined && states.Count > 1)
                 {
-                    return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count);
+                    return Tuple.Create(new List<State>() { }, Flags.NO_DESCRIPTION, line_count, declaredInput);
                 }
                     
             }
                 
             if (states.Count > 0 && acceptStateDefined && rejectStateDefined)
             {
-                return Tuple.Create(states, Flags.SUCCESS, 0);
+                return Tuple.Create(states, Flags.SUCCESS, 0, declaredInput);
             }
             else
             {
-                return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count);
+                return Tuple.Create(new List<State>() { }, Flags.NO_STATES, line_count, declaredInput);
             }
             
         }

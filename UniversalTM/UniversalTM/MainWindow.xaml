@@ -53,19 +53,7 @@
         <Label Content="Input:" HorizontalAlignment="Left" Margin="172,9,0,0" Grid.Row="2" VerticalAlignment="Top" Width="48" Height="26"/>
         <TextBox x:Name="input_box" HorizontalAlignment="Left" Margin="226,9,0,0" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="142" Height="26" MaxLines="1"/>
         <Menu x:Name="menu" Margin="0,0,67,10" Background="White">
-            <MenuItem Header="Settings" FontStyle="Normal" FontWeight="Normal" Click="ShowSettings">
-                <MenuItem.Style>
-                    <Style TargetType="MenuItem">
-                        <Style.Triggers>
-                            <Trigger Property="IsHighlighted" Value="True">
-                                <Setter Property="Background" Value="Orange"/>
-                                
-                            </Trigger>
-                        </Style.Triggers>
-                        
-                    </Style>
-                </MenuItem.Style>
-            </MenuItem>
+            <MenuItem Header="Settings" FontStyle="Normal" FontWeight="Normal" Click="ShowSettings"/>
             <Separator Width="2" Height="25"/>
             <MenuItem Header="Export"/>
             <Separator Width="2" Height="25"/>

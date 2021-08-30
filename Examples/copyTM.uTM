@@ -2,7 +2,7 @@
 States:q1,q2,q3,q4,q5,q6,q7,q8,q9,q10,q11,q12,q13,q14,qn,qr
 Accept:qn
 Reject:qr
-
+Input:0,1
 \\ Move input one pos to right
 q1,0->R,q1
 q1,1->R,q1

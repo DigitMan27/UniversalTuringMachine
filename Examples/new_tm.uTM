@@ -1,7 +1,8 @@
 \\ Turing machine that diagnoses the L = {2^2^N | N>0}
 States: q1, q2, q3, q4, q5, qy, qn
-\\ Accept: qy   
+Accept: qy   
 Reject:qn
+Input:0
 
 \\Transitions
 q1,0->ε,R,q2

@@ -37,10 +37,11 @@ namespace UniversalTM
         private bool termination = false;
         private bool _is_running = false;
         private char[] input; // user input
-        private int output_len = 0; // increment (not used yet)
+        //private List<string> alphabet = new List<string>();
+        private int output_len = 0; 
         private string init_dir = "c:\\";
 
-        private Tuple<List<State>, Flags, int> states = null;
+        private Tuple<List<State>, Flags, int, List<string>> states = null;
         
         private TMclass turingMachine;
 
@@ -135,7 +136,7 @@ namespace UniversalTM
                     this.TM_code.Inlines.Add(new Run(line_n + ". " + line + "\n"));
                     line_n += 1;
                 }
-                turingMachine = new TMclass(filepath);
+                turingMachine = new TMclass(filepath,blank_symbol);
                 states = turingMachine.TM();
                 if (states.Item2 == Flags.SUCCESS)
                 {
@@ -171,6 +172,16 @@ namespace UniversalTM
                     this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Same Accept and Reject State) .\n"));
                 }
+                else if (states.Item2 == Flags.NO_INPUT)
+                {
+                    this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
+                    this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Input Alphabet not well defined) .\n"));
+                }
+                else if (states.Item2 == Flags.UNKNOWN_STATE)
+                {
+                    this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
+                    this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Use of undefined state) .\n"));
+                }
                 reader.Close();
                 
             }
@@ -178,11 +189,7 @@ namespace UniversalTM
 
         private void Write2Tape(object sender, RoutedEventArgs e)
         {
-            if (this.input_box.Text.Contains(this.blank_symbol))
-            {
-                MessageBox.Show("The blank symbol( " + this.blank_symbol + " ) detected on your input\n","Error");
-                return;
-            }
+            
             input = this.input_box.Text.ToCharArray();
             
             if(input.Length==0)
@@ -194,6 +201,14 @@ namespace UniversalTM
             else
             {
                 //DataTable table = new DataTable();
+                for(int i = 0; i < input.Length; i++)
+                {
+                    if(input[i].Equals(blank_symbol) || !states.Item4.Contains(input[i].ToString()))
+                    {
+                        MessageBox.Show("The symbol "+input[i]+" is not defined in the alphabet of the machine \n", "Error");
+                        return;
+                    }
+                }
 
 
                 DataRow row = tapeData.Rows[0];
