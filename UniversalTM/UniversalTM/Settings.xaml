@@ -43,6 +43,9 @@
             <ComboBoxItem Content="Main Theme" IsSelected="True"/>
             <ComboBoxItem Content="Theme 1"/>
             <ComboBoxItem Content="Theme 2"/>
+            <ComboBoxItem Content="Theme 3"/>
+            <ComboBoxItem Content="Theme 4"/>
+            <ComboBoxItem Content="Theme 5"/>
         </ComboBox>
         <Border BorderThickness="1" BorderBrush="Black" Margin="0,106,7,0" Background="{DynamicResource SettingB3}" Grid.Column="1" Grid.RowSpan="2" Height="255" VerticalAlignment="Top">
             <Label Content="Turing Machine and Tape" Margin="9,9,49,42" FontSize="18"/>

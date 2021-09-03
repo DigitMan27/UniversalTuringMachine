@@ -16,7 +16,7 @@
             <FontFamily x:Key="simTMRes">Consolas</FontFamily>
             <FontFamily x:Key="ExecFontRes">Segoe UI</FontFamily>
             <FontFamily x:Key="TapeFontRes">Consolas</FontFamily>
-            <Color x:Key="BackColor">#FFFFFF</Color>
+            
             
         </ResourceDictionary>
     </Application.Resources>
