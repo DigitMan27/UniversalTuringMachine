@@ -137,7 +137,7 @@ namespace UniversalTM
                 {
                     return Tuple.Create(new List<State>() { }, Flags.NO_REJECT, line_count, declaredInput);
                 }
-                else if (Regex.IsMatch(line, pattern: "^\\s*Input:\\s*\\w(\\s*,\\s*\\w)*\\s*$") && statesDefined && acceptStateDefined && rejectStateDefined && inputDefined == false)
+                else if (Regex.IsMatch(line, pattern: "^\\s*Input:\\s*(\\w||[#%^$@!&*])(\\s*,\\s*(\\w||[#%^$@!&*]))*\\s*$") && statesDefined && acceptStateDefined && rejectStateDefined && inputDefined == false)
                 {
                     try
                     {
@@ -158,7 +158,7 @@ namespace UniversalTM
                         return Tuple.Create(new List<State>() { }, Flags.NO_INPUT, line_count, declaredInput);
                     }
                 }
-                else if (!Regex.IsMatch(line, pattern: "^\\s*Input:\\s*\\w(\\s*,\\s*\\w)*\\s*$") && inputDefined == false)
+                else if (!Regex.IsMatch(line, pattern: "^\\s*Input:\\s*(\\w||[#%^$@!&*])(\\s*,\\s*(\\w||[#%^$@!&*]))*\\s*$") && inputDefined == false)
                 {
                     return Tuple.Create(new List<State>() { }, Flags.NO_INPUT, line_count, declaredInput);
                 }

@@ -1,4 +1,4 @@
-\\ Turing machine that diagnoses the L = {2^2^N | N>0}
+\\ Turing machine that decides the L = {0^2^N | N>0}
 States: q1, q2, q3, q4, q5, qy, qn
 Accept: qy   
 Reject:qn

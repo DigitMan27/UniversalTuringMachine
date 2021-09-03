@@ -203,11 +203,20 @@ namespace UniversalTM
                 //DataTable table = new DataTable();
                 for(int i = 0; i < input.Length; i++)
                 {
-                    if(input[i].Equals(blank_symbol) || !states.Item4.Contains(input[i].ToString()))
+                    if (input[i].Equals(blank_symbol))
                     {
-                        MessageBox.Show("The symbol "+input[i]+" is not defined in the alphabet of the machine \n", "Error");
+                        MessageBox.Show("The symbol " + input[i] + " is not defined in the alphabet of the machine \n", "Error");
                         return;
                     }
+                    else if (states != null)
+                    {
+                        if (!states.Item4.Contains(input[i].ToString()))
+                        {
+                            MessageBox.Show("The symbol " + input[i] + " is not defined in the alphabet of the machine \n", "Error");
+                            return;
+                        }
+                    }
+                    
                 }
 
 
@@ -217,7 +226,8 @@ namespace UniversalTM
                     
                     //tapeData.Columns.Add(new DataColumn(i.ToString(),typeof(string)));
                     row[i] = input[i].ToString();
-                    
+                    this.tape_data.Columns[i].HeaderStyle = null;
+
                 }
 
                 //tapeData.Rows.Add(row);
