@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -9,10 +10,6 @@ using System.Xml;
 
 namespace UniversalTM
 {
-    /// <summary>
-    /// Interaction logic for Settings.xaml
-    /// Functionality of the Settings window
-    /// </summary>
     public partial class Settings : Window
     {
         private MainWindow window;
@@ -101,30 +98,32 @@ namespace UniversalTM
                 header_color = ColortapeHeader.Background.ToString();
                 
             }
-            if (!string.IsNullOrEmpty(inputDisplayLim) && int.Parse(inputDisplayLim)!=500 && int.Parse(inputDisplayLim)>0) // default value if negative,empty or same as the default value
-            {
-                    //pass
-            }
-            else
+            if(string.IsNullOrEmpty(tapeLen) || !Regex.IsMatch(inputDisplayLim, "\\d+"))
             {
                 inputDisplayLim = "500";
             }
 
-            if (string.IsNullOrEmpty(tapeLen))
+            if (string.IsNullOrEmpty(tapeLen) || !Regex.IsMatch(tapeLen,"\\d+"))
             {
-                tapeLen = "512";
+                tapeLen = "256";
             }
             if (string.IsNullOrEmpty(blankStr))
             {
                 blankStr = "ε";
             }
             
+
+
             UpdateLayout();
 
             // with these i pass the values for the header_color and InputShowValue so the user don't have to restart the app .
+            
             window.InputShowValue = int.Parse(inputDisplayLim);
-            window.header_color = header_color;
+            
             window.tapeLen = int.Parse(tapeLen);
+            
+
+            window.header_color = header_color;
             window.blank_symbol = blankStr;
 
             window.tapeData.Clear();

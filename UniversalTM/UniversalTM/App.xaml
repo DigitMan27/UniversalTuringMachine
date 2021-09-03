@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:UniversalTM"
              StartupUri="MainWindow.xaml"
+             ShutdownMode="OnMainWindowClose"
     xmlns:System="clr-namespace:System;assembly=System.Runtime">
     <Application.Resources>
         <ResourceDictionary>
@@ -15,6 +16,7 @@
             <FontFamily x:Key="simTMRes">Consolas</FontFamily>
             <FontFamily x:Key="ExecFontRes">Segoe UI</FontFamily>
             <FontFamily x:Key="TapeFontRes">Consolas</FontFamily>
+            
             
         </ResourceDictionary>
     </Application.Resources>

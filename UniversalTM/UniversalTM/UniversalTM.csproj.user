@@ -29,5 +29,14 @@
     <Page Update="Themes\Theme 2.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Themes\Theme 3.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Theme 4.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\Theme 5.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 </Project>

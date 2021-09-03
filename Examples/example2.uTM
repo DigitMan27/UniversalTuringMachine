@@ -1,0 +1,22 @@
+\\ Turing machine that decides the L = {0^2^N | N>0}
+States: q1, q2, q3, q4, q5, qy, qn
+Accept: qy   
+Reject:qn
+Input:0
+
+\\Transitions
+q1,0->ε,R,q2
+q2,x->R,q2
+q2,ε->R,qy
+q2,0->x,R,q3
+q3,0->R,q4
+q3,ε->L,q5
+q3,x->R,q3
+q4,x->R,q4
+q4,0->x,R,q3
+q5,0->L,q5
+q5,x->L,q5
+q5,ε->R,q2
+q1,ε->R,qn
+q1,x->R,qn
+q4,ε->R,qn
