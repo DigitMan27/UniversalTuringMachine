@@ -26,3 +26,6 @@ C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\ob
 C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\ref\UniversalTM.dll
 C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\UniversalTM.pdb
 C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\UniversalTM.genruntimeconfig.cache
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Themes\Theme 3.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Themes\Theme 4.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Themes\Theme 5.baml
