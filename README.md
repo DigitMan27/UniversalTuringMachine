@@ -1,6 +1,6 @@
 # Universal Turing Machine
 
-Status:
+[![Build status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/api/github/webhook?id=7jb6gfx258126jxf)
 
 ## About
 The Universal Turing Machine is an application written in *C\#(.NET 5)* in which you can simulate any turing machine .<br>
