@@ -1,6 +1,6 @@
 \\ Turing Machine that decides the L = {w#w | w {0,1,#}}
 \\ ex. 00#00
-States:q1,q2,q3,q4,q5,q6,q7,q8,qn,qr,κατι
+States:q1,q2,q3,q4,q5,q6,q7,q8,qn,qr
 Accept:qn
 Reject:qr
 Input:0,1,#,r
@@ -32,5 +32,3 @@ q4,1->R,qr
 q5,0->R,qr
 q8,0->R,qr
 q8,1->R,qr
-q1,r->r,N,κατι
-κατι,r->t,R,qn
