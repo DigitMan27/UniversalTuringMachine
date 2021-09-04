@@ -8,5 +8,5 @@ The Universal Turing Machine is an application written in *C\#(.NET 5)* in which
 
 The [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) is required to use the application .
 
-To read more about how to use the application read the [**Documentation**](Documentation.pdf) .
+To learn how to use the application read the [**Documentation**](Documentation.pdf) .
 
