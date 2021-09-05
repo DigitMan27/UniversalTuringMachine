@@ -10,3 +10,5 @@ The [.NET 5 Runtime](https://dotnet.microsoft.com/download/dotnet/5.0/runtime) i
 
 To learn how to use the application read the [**Documentation**](Documentation.pdf) .
 
+If you like my work please consider to star it.
+
