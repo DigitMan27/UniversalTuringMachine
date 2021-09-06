@@ -17,7 +17,9 @@ namespace UniversalTM
     public partial class MainWindow : Window
     {
         private Thread execTM_t;
+
         Settings window_setting;
+        Transition_Table_Window window_table;
 
         private delegate void delUpdateTextBlock(string txt);
         private delegate void delUpdateTape(DataTable tp);
@@ -34,6 +36,7 @@ namespace UniversalTM
         public int tapeLen = 256;
         //End 
         
+
         private bool termination = false;
         private bool _is_running = false;
         private char[] input; // user input
@@ -41,8 +44,8 @@ namespace UniversalTM
         private int output_len = 0; 
         private string init_dir = "c:\\";
 
-        private Tuple<List<State>, Flags, int, List<string>> states = null;
-        
+        public Tuple<List<State>, Flags, int, List<string>> states;
+
         private TMclass turingMachine;
 
         public MainWindow()
@@ -55,12 +58,20 @@ namespace UniversalTM
             InitTape();
         }
 
+        //  Menu 
         private void ShowSettings(object sender, RoutedEventArgs e)
         {
             this.window_setting = new Settings(this);
             this.window_setting.Show();
         }
 
+        private void ShowTransitionTable(object sender, RoutedEventArgs e)
+        {
+            this.window_table = new Transition_Table_Window(states.Item1);
+            this.window_table.Show();
+        }
+
+        // Init Functions
         private void LoadSettings()
         {
             List<string> settings = new List<string>();
@@ -143,6 +154,7 @@ namespace UniversalTM
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Success .\n"));
                     this.clearTM.IsEnabled = true;
                     this.loadTM.IsEnabled = false;
+                    this.transTableMenu.IsEnabled = true;
                     //if (input!=null)
                     //{
                     this.exec.IsEnabled = true;
@@ -253,6 +265,7 @@ namespace UniversalTM
                 this.clearTM.IsEnabled = false;
                 this.loadTM.IsEnabled = true;
                 this.stop.IsEnabled = false;
+                this.transTableMenu.IsEnabled = false;
                 this.TM_code.Inlines.Clear();
                 this.log.Inlines.Add(new Run("[+] Turing machine removed .\n"));
                 //this.log.Inlines.Clear();
@@ -499,5 +512,7 @@ namespace UniversalTM
             else if (move < 0 && pos < tapeData.Columns.Count - 1) { cols[pos + 1].HeaderStyle = null; }
 
         }
+
+        
     }
 }

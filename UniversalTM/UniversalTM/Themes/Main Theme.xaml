@@ -9,4 +9,6 @@
     <SolidColorBrush x:Key="SettingB2" Color="#FFB99342"/>
     <SolidColorBrush x:Key="SettingB3" Color="#FFB25151"/>
     <SolidColorBrush x:Key="SettingGrid" Color="#FFFDAA19"/>
+
+    <SolidColorBrush x:Key="TableBorder" Color="#FFC9F01D"/>
 </ResourceDictionary>

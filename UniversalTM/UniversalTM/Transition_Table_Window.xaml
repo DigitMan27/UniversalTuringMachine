@@ -1,0 +1,26 @@
+﻿<Window x:Class="UniversalTM.Transition_Table_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UniversalTM"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
+        
+        mc:Ignorable="d"
+        Title="Transition Table" ResizeMode="CanMinimize" Height="357" Width="622">
+    <Grid Background="{DynamicResource mainGrid}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="292*"/>
+            <RowDefinition Height="49*"/>
+        </Grid.RowDefinitions>
+        <Button Content="Exit" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="1" VerticalAlignment="Center" Width="66" Height="29" Click="Exit"/>
+        <Border BorderThickness="1" BorderBrush="Black" Margin="5,5,15,5" Background="{DynamicResource TableBorder}">
+            <Border.Effect>
+                <DropShadowEffect/>
+            </Border.Effect>
+        </Border>
+        <DataGrid x:Name="transGrid" Margin="10,10,20,10" IsReadOnly="True" ColumnWidth="*" ItemsSource="{Binding transitions.DefaultView}"/>
+    </Grid>
+    
+</Window>
+

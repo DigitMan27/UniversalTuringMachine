@@ -57,7 +57,7 @@
             <Separator Width="2" Height="25"/>
             <MenuItem Header="Export"/>
             <Separator Width="2" Height="25"/>
-            <MenuItem Header="Transistion Table"/>
+            <MenuItem x:Name="transTableMenu" Header="Transition Table" Click="ShowTransitionTable" IsEnabled="False"/>
         </Menu>
         <Button x:Name="clearTape" Content="Clear Tape" HorizontalAlignment="Left" Margin="494,10,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="84" Click="ClearTape" IsEnabled="False"/>
         <Button x:Name="stop" Content="Stop" Grid.Column="1" HorizontalAlignment="Left" Margin="289,22,0,0" Grid.Row="2" VerticalAlignment="Top" Height="26" Width="80" Click="StopRun" IsEnabled="False" ClickMode="Press"/>
