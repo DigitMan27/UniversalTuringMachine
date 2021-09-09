@@ -4,23 +4,42 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UniversalTM"
-        xmlns:System="clr-namespace:System;assembly=mscorlib"
-        
         mc:Ignorable="d"
-        Title="Transition Table" ResizeMode="CanMinimize" Height="357" Width="622">
+        Title="Transition Table" ResizeMode="CanMinimize" Height="400" Width="669">
+    <Window.Resources>
+        <local:SimpleConverter x:Key="myConv"/>
+    </Window.Resources>
     <Grid Background="{DynamicResource mainGrid}">
         <Grid.RowDefinitions>
             <RowDefinition Height="292*"/>
             <RowDefinition Height="49*"/>
         </Grid.RowDefinitions>
         <Button Content="Exit" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="1" VerticalAlignment="Center" Width="66" Height="29" Click="Exit"/>
-        <Border BorderThickness="1" BorderBrush="Black" Margin="5,5,15,5" Background="{DynamicResource TableBorder}">
+        <Border BorderThickness="1" BorderBrush="Black" Margin="5,10,14,10" Background="{DynamicResource TableBorder}">
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
         </Border>
-        <DataGrid x:Name="transGrid" Margin="10,10,20,10" IsReadOnly="True" ColumnWidth="*" ItemsSource="{Binding transitions.DefaultView}"/>
+        <DataGrid x:Name="transGrid" Margin="10,20,20,20" IsReadOnly="True" ColumnWidth="*" ItemsSource="{Binding transitions.DefaultView}">
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding 'Next State', Converter={StaticResource myConv}}" Value="True">
+                            <Setter Property="Background" Value="LightGreen"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding 'Next State', Converter={StaticResource myConv}}" Value="False">
+                            <Setter Property="Background" Value="#FFFF5B5B"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+        <Rectangle HorizontalAlignment="Left" Margin="160,20,0,0" Stroke="Black" Width="15" Grid.Row="1" Fill="LightGreen" Height="15" VerticalAlignment="Top"/>
+        <Rectangle HorizontalAlignment="Left" Margin="370,20,0,0" Stroke="Black" Width="15" Grid.Row="1" Fill="#FFFF5B5B" Height="15" VerticalAlignment="Top"/>
+        <Label Content="Accept State Transition" Margin="180,14,343,0" Grid.Row="1" Height="29" VerticalAlignment="Top"/>
+        <Label Content="Reject State Transition" Margin="390,14,123,0" Grid.Row="1" Height="29" VerticalAlignment="Top"/>
     </Grid>
-    
+
 </Window>
 

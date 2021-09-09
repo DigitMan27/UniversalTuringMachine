@@ -1,18 +1,51 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace UniversalTM
 {
+
+    public class FinalStatesDecl
+    {
+        private static string a, r;
+        public static string accept_state { get { return a; } set { a = value; } }
+        public static string reject_state { get { return r; } set { r = value; } }
+    }
+
+    public class SimpleConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+
+            if (value.ToString() == FinalStatesDecl.accept_state)
+            {
+                return true;
+            }else if(value.ToString() == FinalStatesDecl.reject_state)
+            {
+                return false;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new InvalidOperationException("SimpleConverter is a OneWay converter.");
+        }
+    }
     public partial class Transition_Table_Window : Window
     {
         DataTable transitions = new DataTable();
-        public string accept_state, reject_state;
 
         public Transition_Table_Window(List<State> states)
         {
@@ -25,6 +58,7 @@ namespace UniversalTM
         {
 
             string[] columns = { "Current State", "Input", "Write", "Move", "Next State" };
+            
             foreach (string col in columns)
             {
                 transitions.Columns.Add(new DataColumn(col, typeof(string)));
@@ -44,12 +78,11 @@ namespace UniversalTM
 
                     if (states[i].nextState[key].accept)
                     {
-                        accept_state = states[i].nextState[key].Name;
-
+                        FinalStatesDecl.accept_state = states[i].nextState[key].Name;
                     }
                     if (states[i].nextState[key].reject)
                     {
-                        reject_state = states[i].nextState[key].Name;
+                        FinalStatesDecl.reject_state = states[i].nextState[key].Name;
                     }
                     transitions.Rows.Add(row);
 
@@ -57,9 +90,6 @@ namespace UniversalTM
 
             }
             this.transGrid.ItemsSource = transitions.DefaultView;
-            /*if (transGrid.Items.Count > 0) MessageBox.Show(transGrid.Items[1].ToString(), "sss");
-            DataGridRow r = transGrid.Items[1] as DataGridRow;
-            r.Background = Brushes.AliceBlue;*/
         }
 
         private void Exit(object sender, RoutedEventArgs e)
