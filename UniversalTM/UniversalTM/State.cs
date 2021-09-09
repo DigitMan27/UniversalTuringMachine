@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace UniversalTM
 {
-    class State
+    public class State
     {
         public enum Move
         {

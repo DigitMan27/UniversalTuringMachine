@@ -11,4 +11,6 @@
     <SolidColorBrush x:Key="SettingB3" Color="#eec170"/>
     <SolidColorBrush x:Key="SettingGrid" Color="#f2a65a"/>
 
+    <SolidColorBrush x:Key="TableBorder" Color="#fff3b0"/>
+
 </ResourceDictionary>

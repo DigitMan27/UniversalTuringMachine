@@ -17,12 +17,15 @@ namespace UniversalTM
     public partial class MainWindow : Window
     {
         private Thread execTM_t;
+
         Settings window_setting;
+        Transition_Table_Window window_table;
 
         private delegate void delUpdateTextBlock(string txt);
         private delegate void delUpdateTape(DataTable tp);
         private delegate void delEnableBtns();
         private delegate void delUpdateHeader(int pos,int move);
+        private delegate void delReallocTable(DataTable tp);
 
         public DataTable tapeData = new DataTable();
 
@@ -32,17 +35,20 @@ namespace UniversalTM
         public string header_color = "#FFFF00"; // default value (Yellow) 
         public string blank_symbol = "ε";
         public int tapeLen = 256;
+        public string tapeScroll = "No";
+        public string logScroll = "Yes";
         //End 
         
+
         private bool termination = false;
-        private bool _is_running = false;
+        //private bool _is_running = false;
         private char[] input; // user input
         //private List<string> alphabet = new List<string>();
         private int output_len = 0; 
         private string init_dir = "c:\\";
 
-        private Tuple<List<State>, Flags, int, List<string>> states = null;
-        
+        public Tuple<List<State>, Flags, int, List<string>> states;
+
         private TMclass turingMachine;
 
         public MainWindow()
@@ -55,12 +61,20 @@ namespace UniversalTM
             InitTape();
         }
 
+        //  Menu 
         private void ShowSettings(object sender, RoutedEventArgs e)
         {
             this.window_setting = new Settings(this);
             this.window_setting.Show();
         }
 
+        private void ShowTransitionTable(object sender, RoutedEventArgs e)
+        {
+            this.window_table = new Transition_Table_Window(states.Item1);
+            this.window_table.Show();
+        }
+
+        // Init Functions
         private void LoadSettings()
         {
             List<string> settings = new List<string>();
@@ -78,6 +92,8 @@ namespace UniversalTM
             header_color = settings[5];
             tapeLen = int.Parse(settings[6]);
             blank_symbol = settings[7];
+            tapeScroll = settings[8];
+            logScroll = settings[9];
             App.Current.Resources["simTMRes"] = new FontFamily(settings[4]);
             App.Current.Resources["ExecFontRes"] = new FontFamily(settings[2]);
             App.Current.Resources["TapeFontRes"] = new FontFamily(settings[3]); 
@@ -143,6 +159,7 @@ namespace UniversalTM
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Success .\n"));
                     this.clearTM.IsEnabled = true;
                     this.loadTM.IsEnabled = false;
+                    this.transTableMenu.IsEnabled = true;
                     //if (input!=null)
                     //{
                     this.exec.IsEnabled = true;
@@ -182,6 +199,11 @@ namespace UniversalTM
                     this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
                     this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Use of undefined state) .\n"));
                 }
+                else if (states.Item2 == Flags.WRONG_TRANSITION)
+                {
+                    this.TM_code.Inlines.ElementAt(states.Item3).Foreground = Brushes.Red;
+                    this.log.Inlines.Add(new Run("[+] Loading Turing Machine : Failure(Transition from final state to another) .\n"));
+                }
                 reader.Close();
                 
             }
@@ -200,6 +222,7 @@ namespace UniversalTM
             }
             else
             {
+                output_len = input.Length;
                 //DataTable table = new DataTable();
                 for(int i = 0; i < input.Length; i++)
                 {
@@ -216,17 +239,22 @@ namespace UniversalTM
                             return;
                         }
                     }
-                    
                 }
-
+                if(input.Length >= tapeData.Columns.Count)
+                {
+                    ReallocTable(tapeData);
+                }
 
                 DataRow row = tapeData.Rows[0];
                 for (int i = 0; i < input.Length; i++)
                 {
-                    
-                    //tapeData.Columns.Add(new DataColumn(i.ToString(),typeof(string)));
+                    if (input.Length >= tapeData.Columns.Count)
+                    {
+                        ReallocTable(tapeData);
+                    }
                     row[i] = input[i].ToString();
                     this.tape_data.Columns[i].HeaderStyle = null;
+                    
 
                 }
 
@@ -239,6 +267,7 @@ namespace UniversalTM
                         this.exec.IsEnabled = true;
                 }
                 this.clearTape.IsEnabled = true;
+                this.insertToTape.IsEnabled = false;
             }
         }
 
@@ -253,6 +282,7 @@ namespace UniversalTM
                 this.clearTM.IsEnabled = false;
                 this.loadTM.IsEnabled = true;
                 this.stop.IsEnabled = false;
+                this.transTableMenu.IsEnabled = false;
                 this.TM_code.Inlines.Clear();
                 this.log.Inlines.Add(new Run("[+] Turing machine removed .\n"));
                 //this.log.Inlines.Clear();
@@ -262,7 +292,7 @@ namespace UniversalTM
         private void Execute(object sender, RoutedEventArgs e)
         {
 
-            for (int i = 0; i < output_len+1; i++)
+            for (int i = 0; i < output_len; i++)
             {
                 this.tape_data.Columns[i].HeaderStyle = null;
             }
@@ -274,8 +304,9 @@ namespace UniversalTM
             this.stop.IsEnabled = true;
             this.termination = false;
             this.exec_speed.IsEnabled = false;
+            this.clearLog.IsEnabled = false;
             this.menu.IsEnabled = false;
-            this._is_running = true;
+            //this._is_running = true;
             double time;
             
             time = (string.IsNullOrEmpty(exec_speed.Text) || double.Parse(exec_speed.Text) < 0) ? time = 0 : time = double.Parse(exec_speed.Text); // default value if empty or negative value .
@@ -292,22 +323,16 @@ namespace UniversalTM
         {
             if (this.tape_data.Columns.Count > 0)
             {
-
-                //this.exec.IsEnabled = false;
                 this.clearTape.IsEnabled = false;
-                //this.tape_data.ColumnHeaderStyle = null;
-                //this.tape_data.Columns.Clear();
-                if (!_is_running) output_len = input.Length;
+                this.insertToTape.IsEnabled = true;
+                //if (!_is_running) output_len = input.Length;
                 DataRow row = tapeData.Rows[0];
                 for (int i = 0; i < output_len; i++)
                 {
                     this.tape_data.Columns[i].HeaderStyle = null;
                     row[i] = blank_symbol;
                 }
-
-                //tapeData.Rows.Add(row);
                 this.tape_data.ItemsSource = tapeData.DefaultView;
-                //InitTape();
                 this.log.Inlines.Add(new Run("[+] Input removed from the tape .\n"));
                 input = null;
             }
@@ -320,13 +345,20 @@ namespace UniversalTM
             this.exec.IsEnabled = true;
             this.clearTM.IsEnabled = true;
             this.clearTape.IsEnabled = true;
-            this.insertToTape.IsEnabled = true;
+            //this.insertToTape.IsEnabled = true;
             this.exec_speed.IsEnabled = true;
             this.menu.IsEnabled = true;
-            this._is_running = false;
+            this.clearLog.IsEnabled = true;
+            //this._is_running = false;
             this.log.Inlines.Add(new Run("[+] Turing machine simulation stopped .\n"));
 
         }
+
+        private void ClearLog(object sender, RoutedEventArgs e)
+        {
+            this.log.Inlines.Clear();
+        }
+
 
         private void Exit(object sender, RoutedEventArgs e)
         {
@@ -334,12 +366,13 @@ namespace UniversalTM
         }
 
         /* Thread Function*/
-        private void Execute_in_Thread(DataTable tapeData, double time) // do something if table is out of space | detailed mesgs when running TM
+        private void Execute_in_Thread(DataTable tapeData, double time)
         {
             delUpdateTextBlock DupdateTextBlock = new delUpdateTextBlock(UpdateTXT);
             delUpdateTape Dtape_update = new delUpdateTape(UpdateTable);
             delEnableBtns DenableBtns = new delEnableBtns(EnableBtns);
             delUpdateHeader DheaderUpdate = new delUpdateHeader(HeaderUpdate);
+            delReallocTable Drealloc = new delReallocTable(ReallocTable);
 
             int header = -1;
             int count = 0;
@@ -361,6 +394,7 @@ namespace UniversalTM
                 }
                 else
                 {
+                    
                     try
                     {
                         if (state.accept)
@@ -381,7 +415,7 @@ namespace UniversalTM
                         string i = tapeData.Rows[0][header].ToString();
                         if (count < InputShowValue)
                         {
-                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+] State: " + state.Name + " Input " + i + " .\n");
+                            this.Dispatcher.BeginInvoke(DupdateTextBlock, "[+](Step #"+count+") State: " + state.Name + " Input " + i + " .\n");
                             count += 1;
                             if (count == InputShowValue)
                             {
@@ -389,9 +423,10 @@ namespace UniversalTM
                             }
                         }
 
-
+                        
                         if (state.writeToTape.ContainsKey(i))
                         {
+                            
                             tapeData.Rows[0][header] = state.writeToTape[i];
                             this.Dispatcher.BeginInvoke(Dtape_update, tapeData);
                         }
@@ -399,11 +434,15 @@ namespace UniversalTM
                         int move = (int)state.moveToTape[i];
                         if ((header + move) >= 0)
                         {
+                            if (header == tapeData.Columns.Count - 1)
+                                this.Dispatcher.Invoke(Drealloc, tapeData);
                             header += move;
-                            if (header > output_len)
+                            if (header >= output_len)
                                 output_len = header + 1;
-                            if (header <= tapeData.Columns.Count - 1)
+                            if (header < tapeData.Columns.Count)
                                 this.Dispatcher.BeginInvoke(DheaderUpdate, header, move);
+                            
+
                         }
 
                         state = state.nextState[i];
@@ -459,12 +498,17 @@ namespace UniversalTM
         private void UpdateTXT(string txt)
         {
             this.log.Inlines.Add(new Run(txt));
+            if (logBar.IsVisible && logScroll.Equals("Yes"))
+            {
+                logBar.ScrollToBottom();
+            }
 
         }
 
         private void UpdateTable(DataTable tp)
         {
             this.tape_data.ItemsSource = tp.DefaultView;
+            
         }
 
         private void EnableBtns()
@@ -472,10 +516,26 @@ namespace UniversalTM
             this.exec.IsEnabled = true;
             this.clearTM.IsEnabled = true;
             this.clearTape.IsEnabled = true;
-            this.insertToTape.IsEnabled = true;
+            //this.insertToTape.IsEnabled = true;
             this.exec_speed.IsEnabled = true;
             this.stop.IsEnabled = false;
             this.menu.IsEnabled = true;
+            this.clearLog.IsEnabled = true;
+        }
+
+        private void ReallocTable(DataTable tp)
+        {
+            tape_data.AutoGenerateColumns = false;
+            int size = tapeData.Columns.Count;
+            DataRow row = tapeData.Rows[0];
+            for(int i = size; i < 2 * size; i++)
+            {
+                tapeData.Columns.Add(new DataColumn(i.ToString(), typeof(string)));
+                row[i] = blank_symbol;
+            }
+            
+            this.tape_data.ItemsSource = tapeData.DefaultView;
+            tape_data.AutoGenerateColumns = true;
         }
 
         private void HeaderUpdate(int pos, int move)
@@ -495,9 +555,14 @@ namespace UniversalTM
             });
 
             cols[pos].HeaderStyle = style;
-            if (move > 0) { cols[pos - 1].HeaderStyle = null; }
-            else if (move < 0 && pos < tapeData.Columns.Count - 1) { cols[pos + 1].HeaderStyle = null; }
+            double ii = tape_data.Columns[pos].ActualWidth;
+            double offset = ii;
+            offset *= pos/2;
+            if (move > 0) { cols[pos - 1].HeaderStyle = null; if (tapeScroll.Equals("Yes")) tapeBar.ScrollToHorizontalOffset(offset); }
+            else if (move < 0 && pos < tapeData.Columns.Count - 1) { cols[pos + 1].HeaderStyle = null; if (tapeScroll.Equals("Yes"))  tapeBar.ScrollToHorizontalOffset(offset-offset/2); }
 
         }
+
+        
     }
 }
