@@ -44,7 +44,7 @@
             <Border.Effect>
                 <DropShadowEffect/>
             </Border.Effect>
-            <ScrollViewer BorderThickness="1" Margin="5,30,5,5" ClipToBounds="True" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer x:Name="logBar" BorderThickness="1" Margin="5,30,5,5" ClipToBounds="True" VerticalScrollBarVisibility="Auto">
                 <TextBlock FontFamily="{DynamicResource ExecFontRes}" x:Name="log" TextWrapping="Wrap" Margin="0,0,0,0" Background="White" FontStyle="Italic" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True"/>
             </ScrollViewer>
         </Border>
@@ -55,7 +55,6 @@
         <Menu x:Name="menu" Margin="0,0,67,10" Background="White">
             <MenuItem Header="Settings" FontStyle="Normal" FontWeight="Normal" Click="ShowSettings"/>
             <Separator Width="2" Height="25"/>
-            <MenuItem Header="Export"/>
             <Separator Width="2" Height="25"/>
             <MenuItem x:Name="transTableMenu" Header="Transition Table" Click="ShowTransitionTable" IsEnabled="False"/>
         </Menu>

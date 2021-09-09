@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+  <MainTheme Value="Theme 5" Index="5" />
+  <InputLimit Value="500" Index="-1" />
+  <LogFont Value="Consolas" Index="0" />
+  <TapeFont Value="Consolas" Index="0" />
+  <TMFont Value="Consolas" Index="0" />
+  <HeaderColor Value="#FFFFF300" Index="0" />
+  <TapeLength Value="10" Index="-1" />
+  <BlankSymbol Value="ε" Index="-1" />
+</Settings>

@@ -13,6 +13,7 @@ namespace UniversalTM
         SAME_STATE = 5, // accept state = reject state
         NO_INPUT=6, // Alphabet not declared or contains blank symbol
         UNKNOWN_STATE=7, // The machine uses an undefined state
+        WRONG_TRANSITION = 8, // triggers when accept or reject state have transitions to other states which is forbidden by the definition of the Turing Machine
         SUCCESS=0 // success .
     }
     class TMclass
@@ -190,6 +191,17 @@ namespace UniversalTM
                             State state = states.Find(o => o.Name.Equals(cu[0]));
                             if (state == null)
                                 throw new Exception();
+                            try
+                            {
+                                if (state.accept || state.reject) // final states must not lead to other states (cause there are final states)
+                                    throw new Exception();
+                            }
+                            catch
+                            {
+                                return Tuple.Create(new List<State>() { }, Flags.WRONG_TRANSITION, line_count, declaredInput);
+                            }
+                            
+
                         
                         
 
