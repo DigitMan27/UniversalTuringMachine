@@ -50,10 +50,10 @@ namespace UniversalTM
             this.Tape_font_changer.SelectedIndex = font_indexes[2];
             this.font_changer.SelectedIndex = font_indexes[1];
             this.header_color.SelectedIndex = font_indexes[4];
-
-
-
-
+            if (settings[8].Equals("Yes"))
+                tape_scroll.IsChecked = true;
+            if (settings[9].Equals("Yes"))
+                log_scroll.IsChecked = true;
         }
 
         private void ExitSettings(object sender, RoutedEventArgs e)
@@ -68,6 +68,9 @@ namespace UniversalTM
             string tapeLen = this.tape_len.Text;
             string blankStr = this.blank_symb.Text;
             string header_color="";
+            string tapeScroll = "No";
+            string logScroll = "No";
+
             ComboBoxItem theme = (ComboBoxItem)this.theme_box.SelectedItem;
             string str_theme = theme.Content.ToString();
             if (!string.IsNullOrEmpty(str_theme))
@@ -111,6 +114,14 @@ namespace UniversalTM
             {
                 blankStr = "ε";
             }
+            if ((bool)tape_scroll.IsChecked)
+            {
+                tapeScroll = "Yes";
+            }
+            if ((bool)log_scroll.IsChecked)
+            {
+                logScroll = "Yes";
+            }
             
 
 
@@ -126,6 +137,9 @@ namespace UniversalTM
             window.header_color = header_color;
             window.blank_symbol = blankStr;
 
+            window.tapeScroll = tapeScroll;
+            window.logScroll = logScroll;
+
             window.tapeData.Clear();
             DataTable settingstb = new DataTable();
             DataRow row = settingstb.NewRow();
@@ -140,7 +154,7 @@ namespace UniversalTM
             window.tapeData = settingstb;
             window.tape_data.ItemsSource = window.tapeData.DefaultView;
             
-
+            // Settings container
             List<Tuple<string, string, string,string,int>> settings = new List<Tuple<string, string, string,string,int>>{
                 new Tuple<string, string, string,string,int>("MainTheme", "Value", str_theme,"Index",this.theme_box.SelectedIndex),
                 new Tuple<string, string, string,string,int>("InputLimit", "Value", inputDisplayLim,"Index",-1),
@@ -149,7 +163,9 @@ namespace UniversalTM
                 new Tuple<string, string, string,string,int>("TMFont","Value",simTMFont.FontFamily.ToString(),"Index",this.TM_font_changer.SelectedIndex),
                 new Tuple<string, string, string,string,int>("HeaderColor", "Value", header_color,"Index",this.header_color.SelectedIndex),
                 new Tuple<string, string, string,string,int>("TapeLength", "Value", tapeLen,"Index",-1),
-                new Tuple<string, string, string,string,int>("BlankSymbol", "Value", blankStr,"Index",-1)
+                new Tuple<string, string, string,string,int>("BlankSymbol", "Value", blankStr,"Index",-1),
+                new Tuple<string, string, string,string,int>("TapeAutoScroll", "Value", tapeScroll,"Index",-1),
+                new Tuple<string, string, string,string,int>("LogAutoScroll", "Value", logScroll,"Index",-1)
             };
 
             XmlDocument config = new XmlDocument();

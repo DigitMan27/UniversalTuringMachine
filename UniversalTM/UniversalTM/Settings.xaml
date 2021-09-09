@@ -16,7 +16,7 @@
             <ColumnDefinition Width="103*"/>
             <ColumnDefinition Width="97*"/>
         </Grid.ColumnDefinitions>
-        <Border BorderThickness="1" BorderBrush="Black" Margin="13,13,14,126" Background="{DynamicResource SettingB2}" Grid.Row="1">
+        <Border BorderThickness="1" BorderBrush="Black" Margin="13,13,14,101" Background="{DynamicResource SettingB2}" Grid.Row="1">
             <Label Content="Execution Log" Margin="0,9,0,66" FontSize="18" HorizontalAlignment="Center" Width="262" RenderTransformOrigin="0.512,0.488"/>
         </Border>
         <Label Content="Input display limit:" Margin="62,75,71,202" Grid.Row="1"/>
@@ -47,7 +47,7 @@
             <ComboBoxItem Content="Theme 4"/>
             <ComboBoxItem Content="Theme 5"/>
         </ComboBox>
-        <Border BorderThickness="1" BorderBrush="Black" Margin="0,106,7,0" Background="{DynamicResource SettingB3}" Grid.Column="1" Grid.RowSpan="2" Height="255" VerticalAlignment="Top">
+        <Border BorderThickness="1" BorderBrush="Black" Margin="0,106,7,66" Background="{DynamicResource SettingB3}" Grid.Column="1" Grid.RowSpan="2">
             <Label Content="Turing Machine and Tape" Margin="9,9,49,42" FontSize="18"/>
         </Border>
         <Label Content="TM Font :" HorizontalAlignment="Left" Margin="11,29,0,0" VerticalAlignment="Top" Width="81" Grid.Column="1" Height="26" Grid.Row="1"/>
@@ -103,6 +103,12 @@
         <TextBox x:Name="tape_len" Grid.Column="1" HorizontalAlignment="Left" Margin="98,148,0,0" Grid.Row="1" Text="256" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" MaxLines="1" MinLines="1" InputScope="Number"/>
         <Label Content="Blank Symbol:" Grid.Column="1" HorizontalAlignment="Left" Margin="11,175,0,0" Grid.Row="1" VerticalAlignment="Top" Width="90"/>
         <TextBox x:Name="blank_symb" Grid.Column="1" HorizontalAlignment="Left" Margin="98,179,0,0" Grid.Row="1" Text="ε" TextWrapping="Wrap" VerticalAlignment="Top" Width="47" MaxLines="1" InputScope="OneChar" MaxLength="1"/>
+        <CheckBox x:Name="tape_scroll" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="103,216,0,0" Grid.Row="1" VerticalAlignment="Top"/>
+        <Label Content="Tape AutoScoll:" Grid.Column="1" HorizontalAlignment="Left" Margin="11,210,0,0" Grid.Row="1" VerticalAlignment="Top" Width="92"/>
+        <CheckBox x:Name="log_scroll" Content="" HorizontalAlignment="Left" Margin="101,182,0,0" Grid.Row="1" VerticalAlignment="Top" IsChecked="True"/>
+        <Label Content="AutoScroll:" HorizontalAlignment="Left" Margin="30,176,0,0" Grid.Row="1" VerticalAlignment="Top" Width="66"/>
+
+
 
     </Grid>
 </Window>

@@ -35,11 +35,13 @@ namespace UniversalTM
         public string header_color = "#FFFF00"; // default value (Yellow) 
         public string blank_symbol = "ε";
         public int tapeLen = 256;
+        public string tapeScroll = "No";
+        public string logScroll = "Yes";
         //End 
         
 
         private bool termination = false;
-        private bool _is_running = false;
+        //private bool _is_running = false;
         private char[] input; // user input
         //private List<string> alphabet = new List<string>();
         private int output_len = 0; 
@@ -90,6 +92,8 @@ namespace UniversalTM
             header_color = settings[5];
             tapeLen = int.Parse(settings[6]);
             blank_symbol = settings[7];
+            tapeScroll = settings[8];
+            logScroll = settings[9];
             App.Current.Resources["simTMRes"] = new FontFamily(settings[4]);
             App.Current.Resources["ExecFontRes"] = new FontFamily(settings[2]);
             App.Current.Resources["TapeFontRes"] = new FontFamily(settings[3]); 
@@ -236,18 +240,21 @@ namespace UniversalTM
                         }
                     }
                 }
-                /*if(input.Length > tapeData.Columns.Count)
+                if(input.Length >= tapeData.Columns.Count)
                 {
-                    ReallocTable();
-                }*/
+                    ReallocTable(tapeData);
+                }
 
                 DataRow row = tapeData.Rows[0];
                 for (int i = 0; i < input.Length; i++)
                 {
-                    
-                    //tapeData.Columns.Add(new DataColumn(i.ToString(),typeof(string)));
+                    if (input.Length >= tapeData.Columns.Count)
+                    {
+                        ReallocTable(tapeData);
+                    }
                     row[i] = input[i].ToString();
-                    //this.tape_data.Columns[i].HeaderStyle = null;
+                    this.tape_data.Columns[i].HeaderStyle = null;
+                    
 
                 }
 
@@ -285,7 +292,7 @@ namespace UniversalTM
         private void Execute(object sender, RoutedEventArgs e)
         {
 
-            for (int i = 0; i < output_len+1; i++)
+            for (int i = 0; i < output_len; i++)
             {
                 this.tape_data.Columns[i].HeaderStyle = null;
             }
@@ -297,6 +304,7 @@ namespace UniversalTM
             this.stop.IsEnabled = true;
             this.termination = false;
             this.exec_speed.IsEnabled = false;
+            this.clearLog.IsEnabled = false;
             this.menu.IsEnabled = false;
             //this._is_running = true;
             double time;
@@ -337,13 +345,20 @@ namespace UniversalTM
             this.exec.IsEnabled = true;
             this.clearTM.IsEnabled = true;
             this.clearTape.IsEnabled = true;
-            this.insertToTape.IsEnabled = true;
+            //this.insertToTape.IsEnabled = true;
             this.exec_speed.IsEnabled = true;
             this.menu.IsEnabled = true;
+            this.clearLog.IsEnabled = true;
             //this._is_running = false;
             this.log.Inlines.Add(new Run("[+] Turing machine simulation stopped .\n"));
 
         }
+
+        private void ClearLog(object sender, RoutedEventArgs e)
+        {
+            this.log.Inlines.Clear();
+        }
+
 
         private void Exit(object sender, RoutedEventArgs e)
         {
@@ -379,6 +394,7 @@ namespace UniversalTM
                 }
                 else
                 {
+                    
                     try
                     {
                         if (state.accept)
@@ -407,9 +423,10 @@ namespace UniversalTM
                             }
                         }
 
-
+                        
                         if (state.writeToTape.ContainsKey(i))
                         {
+                            
                             tapeData.Rows[0][header] = state.writeToTape[i];
                             this.Dispatcher.BeginInvoke(Dtape_update, tapeData);
                         }
@@ -417,13 +434,15 @@ namespace UniversalTM
                         int move = (int)state.moveToTape[i];
                         if ((header + move) >= 0)
                         {
+                            if (header == tapeData.Columns.Count - 1)
+                                this.Dispatcher.Invoke(Drealloc, tapeData);
                             header += move;
-                            if (header > output_len)
+                            if (header >= output_len)
                                 output_len = header + 1;
                             if (header < tapeData.Columns.Count)
                                 this.Dispatcher.BeginInvoke(DheaderUpdate, header, move);
-                            if(header == tapeData.Columns.Count)
-                                this.Dispatcher.BeginInvoke(Drealloc, tapeData);
+                            
+
                         }
 
                         state = state.nextState[i];
@@ -479,7 +498,7 @@ namespace UniversalTM
         private void UpdateTXT(string txt)
         {
             this.log.Inlines.Add(new Run(txt));
-            if (logBar.IsVisible)
+            if (logBar.IsVisible && logScroll.Equals("Yes"))
             {
                 logBar.ScrollToBottom();
             }
@@ -489,6 +508,7 @@ namespace UniversalTM
         private void UpdateTable(DataTable tp)
         {
             this.tape_data.ItemsSource = tp.DefaultView;
+            
         }
 
         private void EnableBtns()
@@ -500,10 +520,12 @@ namespace UniversalTM
             this.exec_speed.IsEnabled = true;
             this.stop.IsEnabled = false;
             this.menu.IsEnabled = true;
+            this.clearLog.IsEnabled = true;
         }
 
         private void ReallocTable(DataTable tp)
         {
+            tape_data.AutoGenerateColumns = false;
             int size = tapeData.Columns.Count;
             DataRow row = tapeData.Rows[0];
             for(int i = size; i < 2 * size; i++)
@@ -511,8 +533,9 @@ namespace UniversalTM
                 tapeData.Columns.Add(new DataColumn(i.ToString(), typeof(string)));
                 row[i] = blank_symbol;
             }
-            //tapeData.Rows.Add(row);
+            
             this.tape_data.ItemsSource = tapeData.DefaultView;
+            tape_data.AutoGenerateColumns = true;
         }
 
         private void HeaderUpdate(int pos, int move)
@@ -532,8 +555,11 @@ namespace UniversalTM
             });
 
             cols[pos].HeaderStyle = style;
-            if (move > 0) { cols[pos - 1].HeaderStyle = null; }
-            else if (move < 0 && pos < tapeData.Columns.Count - 1) { cols[pos + 1].HeaderStyle = null; }
+            double ii = tape_data.Columns[pos].ActualWidth;
+            double offset = ii;
+            offset *= pos/2;
+            if (move > 0) { cols[pos - 1].HeaderStyle = null; if (tapeScroll.Equals("Yes")) tapeBar.ScrollToHorizontalOffset(offset); }
+            else if (move < 0 && pos < tapeData.Columns.Count - 1) { cols[pos + 1].HeaderStyle = null; if (tapeScroll.Equals("Yes"))  tapeBar.ScrollToHorizontalOffset(offset-offset/2); }
 
         }
 
