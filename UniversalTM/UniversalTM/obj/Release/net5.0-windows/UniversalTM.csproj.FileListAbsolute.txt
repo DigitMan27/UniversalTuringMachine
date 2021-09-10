@@ -29,5 +29,6 @@ C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\ob
 C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Themes\Theme 3.baml
 C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Themes\Theme 4.baml
 C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Themes\Theme 5.baml
-C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Transition Table Window.g.cs
-C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Transition Table Window.baml
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Transition_Table_Window.g.cs
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\Hive\Documents\Github\UniversalTuringMachine\UniversalTM\UniversalTM\obj\Release\net5.0-windows\Transition_Table_Window.baml
