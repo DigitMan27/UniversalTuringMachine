@@ -1,7 +1,5 @@
 # Universal Turing Machine
 
-[![Build status](https://ci.appveyor.com/api/projects/status/32r7s2skrgm9ubva?svg=true)](https://ci.appveyor.com/project/DigitMan27/universalturingmachine)
-
 ## About
 The Universal Turing Machine is an application written in *C\#(.NET 5)* in which you can simulate any turing machine .<br>
 (**Important Note:** This app supports **ONLY** **deterministic** turing machines so make sure that your turing machine is deterministic. )
