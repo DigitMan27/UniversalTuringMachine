@@ -11,4 +11,5 @@ platform: Any CPU
 configuration: Release
 
 build:
+  parallel: false
   verbosity: normal
