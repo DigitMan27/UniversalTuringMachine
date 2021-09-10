@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UniversalTM"
         mc:Ignorable="d"
-        Title="Transition Table" ResizeMode="CanMinimize" Height="400" Width="669">
+        Title="Transitions Table" ResizeMode="CanMinimize" Height="400" Width="669">
     <Window.Resources>
         <local:SimpleConverter x:Key="myConv"/>
     </Window.Resources>

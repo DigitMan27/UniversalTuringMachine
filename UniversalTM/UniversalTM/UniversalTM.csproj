@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>myicon.ico</ApplicationIcon>
     <Win32Resource />
+    <Version>1.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
